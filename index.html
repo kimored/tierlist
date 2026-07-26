@@ -33,6 +33,9 @@ input:focus,select:focus{border-color:var(--accent)}
 
 /* HOME */
 #homeScreen{padding:16px;max-width:800px;margin:0 auto}
+.backup-bar{display:flex;gap:8px;margin-bottom:20px}
+.backup-bar button{flex:1;padding:10px;border-radius:10px;font-size:13px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:6px;background:var(--surface);border:1px solid var(--surface3)}
+.backup-bar button:hover{border-color:var(--accent)}
 .home-title{font-size:28px;font-weight:800;margin:20px 0 8px;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 .home-sub{color:var(--text2);margin-bottom:24px;font-size:14px}
 .list-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
@@ -156,6 +159,10 @@ input:focus,select:focus{border-color:var(--accent)}
   <div id="homeContent" style="padding:16px;max-width:800px;margin:0 auto">
     <div class="home-title">Le tue Tier List</div>
     <div class="home-sub">Crea e organizza le tue classifiche</div>
+    <div class="backup-bar">
+      <button id="exportBackup">📦 Esporta Backup</button>
+      <button id="importBackup">📥 Importa Backup<input type="file" id="importFile" accept=".tierlist,.json" hidden></button>
+    </div>
     <div class="list-grid" id="listGrid"></div>
   </div>
 </div>
@@ -255,7 +262,7 @@ input:focus,select:focus{border-color:var(--accent)}
 
 const TIERS = ['S','A','B','C','D'];
 const TIER_COLORS = {S:'#ff1744',A:'#ff9100',B:'#ffea00',C:'#69f0ae',D:'#448aff'};
-let data = JSON.parse(localStorage.getItem('tierlist_data') || '{"lists":[]}');
+let data = { lists: [] };
 let currentListId = null;
 let editingItemId = null;
 let pendingImg = null;
@@ -264,10 +271,88 @@ let renameListId = null;
 
 // ── UTILS ──
 const $ = id => document.getElementById(id);
-const save = () => localStorage.setItem('tierlist_data', JSON.stringify(data));
 const genId = () => Date.now().toString(36) + Math.random().toString(36).slice(2,6);
 const getList = () => data.lists.find(l => l.id === currentListId);
 const esc = s => { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; };
+
+// ── IndexedDB ──
+const DB_NAME = 'tierlist_db';
+const DB_VERSION = 1;
+const STORE = 'appdata';
+let db = null;
+
+function openDB() {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open(DB_NAME, DB_VERSION);
+    req.onupgradeneeded = e => { e.target.result.createObjectStore(STORE); };
+    req.onsuccess = e => { db = e.target.result; resolve(db); };
+    req.onerror = e => reject(e.target.error);
+  });
+}
+
+function save() {
+  if (!db) return;
+  const tx = db.transaction(STORE, 'readwrite');
+  tx.objectStore(STORE).put(data, 'data');
+}
+
+function loadData() {
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE, 'readonly');
+    const req = tx.objectStore(STORE).get('data');
+    req.onsuccess = () => resolve(req.result || null);
+    req.onerror = e => reject(e.target.error);
+  });
+}
+
+async function initData() {
+  await openDB();
+  const stored = await loadData();
+  if (stored) {
+    data = stored;
+  } else {
+    const old = localStorage.getItem('tierlist_data');
+    if (old) {
+      try { data = JSON.parse(old); save(); } catch(_) {}
+    }
+  }
+  renderHome();
+}
+
+// ── EXPORT/IMPORT BACKUP ──
+$('exportBackup').addEventListener('click', () => {
+  const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  const d = new Date();
+  a.download = `tierlist-backup-${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}.tierlist`;
+  a.click();
+  URL.revokeObjectURL(url);
+  toast('Backup esportato!');
+});
+
+$('importBackup').addEventListener('click', () => $('importFile').click());
+$('importFile').addEventListener('change', e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const imported = JSON.parse(reader.result);
+      if (!imported.lists || !Array.isArray(imported.lists)) throw new Error('invalid');
+      if (!confirm(`Importare ${imported.lists.length} tier list? I dati attuali verranno sostituiti.`)) return;
+      data = imported;
+      save();
+      renderHome();
+      toast('Backup importato!');
+    } catch(_) {
+      toast('File non valido');
+    }
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+});
 
 function toast(msg) {
   const t = $('toast');
@@ -882,7 +967,7 @@ async function exportImage() {
 function loadImg(src) { return new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = src; }); }
 
 // ── INIT ──
-renderHome();
+initData();
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
 
 
