@@ -23,22 +23,18 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 input,select{font-family:inherit;color:var(--text);background:var(--surface2);border:1px solid var(--surface3);border-radius:8px;padding:8px 12px;outline:none}
 input:focus,select:focus{border-color:var(--accent)}
 
-.app-header{position:sticky;top:0;z-index:100;background:var(--surface);backdrop-filter:blur(20px);border-bottom:1px solid var(--surface3);padding:12px 16px;display:flex;align-items:center;gap:12px}
-.app-header h1{font-size:20px;font-weight:700;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;flex-shrink:0}
+.header{position:sticky;top:0;z-index:100;background:var(--surface);backdrop-filter:blur(20px);border-bottom:1px solid var(--surface3);padding:12px 16px;display:flex;align-items:center;gap:12px}
+.header h1{font-size:20px;font-weight:700;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;flex-shrink:0}
 .btn{padding:8px 16px;border-radius:8px;font-size:14px;font-weight:600;transition:all .2s}
 .btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#000}
-.btn-primary:hover{opacity:.9;transform:translateY(-1px)}
 .btn-secondary{background:var(--surface2);border:1px solid var(--surface3)}
-.btn-secondary:hover{border-color:var(--accent)}
 .btn-icon{width:40px;height:40px;display:flex;align-items:center;justify-content:center;border-radius:10px;font-size:20px;background:var(--surface2);border:1px solid var(--surface3)}
-.btn-icon:hover{border-color:var(--accent);background:var(--surface3)}
 .btn-danger{background:#ff174422;color:var(--s);border:1px solid #ff174444}
-.btn-danger:hover{background:#ff174444}
 
-/* ── HOME ── */
-.home{padding:16px;max-width:800px;margin:0 auto}
+/* HOME */
+#homeScreen{padding:16px;max-width:800px;margin:0 auto}
 .home-title{font-size:28px;font-weight:800;margin:20px 0 8px;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.home-subtitle{color:var(--text2);margin-bottom:24px;font-size:14px}
+.home-sub{color:var(--text2);margin-bottom:24px;font-size:14px}
 .list-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
 .list-card{background:var(--surface);border:1px solid var(--surface3);border-radius:var(--radius);padding:20px;cursor:pointer;transition:all .25s;position:relative;overflow:hidden}
 .list-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--accent2));opacity:0;transition:opacity .25s}
@@ -47,780 +43,584 @@ input:focus,select:focus{border-color:var(--accent)}
 .list-card-name{font-size:16px;font-weight:700;margin-bottom:4px;padding-right:60px}
 .list-card-count{font-size:13px;color:var(--text2);margin-bottom:10px}
 .list-card-preview{display:flex;flex-direction:column;gap:3px}
-.mini-tier-row{display:flex;align-items:stretch;border-radius:4px;overflow:hidden;height:24px}
-.mini-tier-label{width:20px;min-width:20px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:900;color:#000}
-.mini-tier-label[data-tier="S"]{background:var(--s)}
-.mini-tier-label[data-tier="A"]{background:var(--a)}
-.mini-tier-label[data-tier="B"]{background:var(--b)}
-.mini-tier-items{display:flex;gap:2px;padding:2px;background:var(--surface2);flex:1;align-items:center;overflow:hidden}
-.mini-tier-items .mini-thumb{width:20px;height:20px;border-radius:3px;overflow:hidden;flex-shrink:0}
-.mini-tier-items .mini-thumb img{width:100%;height:100%;object-fit:cover}
-.mini-tier-items .mini-more{width:20px;height:20px;border-radius:3px;background:var(--surface3);display:flex;align-items:center;justify-content:center;font-size:7px;font-weight:700;color:var(--text2);flex-shrink:0}
-.list-card-actions{position:absolute;top:12px;right:12px;display:flex;gap:4px}
-.list-card-actions button{width:32px;height:32px;border-radius:8px;font-size:15px;display:flex;align-items:center;justify-content:center;background:var(--surface2);border:1px solid var(--surface3);transition:all .2s;opacity:.6}
-.list-card-actions button:hover{opacity:1;border-color:var(--accent)}
+.mini-row{display:flex;align-items:stretch;border-radius:4px;overflow:hidden;height:24px}
+.mini-label{width:20px;min-width:20px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:900;color:#000}
+.mini-label[data-t="S"]{background:var(--s)}
+.mini-label[data-t="A"]{background:var(--a)}
+.mini-label[data-t="B"]{background:var(--b)}
+.mini-items{display:flex;gap:2px;padding:2px;background:var(--surface2);flex:1;align-items:center;overflow:hidden}
+.mini-items .mt{width:20px;height:20px;border-radius:3px;overflow:hidden;flex-shrink:0}
+.mini-items .mt img{width:100%;height:100%;object-fit:cover}
+.mini-items .mm{width:20px;height:20px;border-radius:3px;background:var(--surface3);display:flex;align-items:center;justify-content:center;font-size:7px;font-weight:700;color:var(--text2);flex-shrink:0}
+.card-actions{position:absolute;top:12px;right:12px;display:flex;gap:4px}
+.card-actions button{width:32px;height:32px;border-radius:8px;font-size:15px;display:flex;align-items:center;justify-content:center;background:var(--surface2);border:1px solid var(--surface3);opacity:.6}
 .add-card{border:2px dashed var(--surface3);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:var(--text2);min-height:100px}
 .add-card:hover{border-color:var(--accent);color:var(--accent)}
 .add-card .plus{font-size:32px;font-weight:300;line-height:1}
 
-/* ── TIER VIEW ── */
-.tier-view{display:none;flex-direction:column;height:100%}
-.tier-view.active{display:flex}
+/* TIER VIEW */
+#tierView{display:none;flex-direction:column;height:100vh}
+#tierView.active{display:flex}
 .tier-header{padding:12px 16px;background:var(--surface);border-bottom:1px solid var(--surface3);display:flex;align-items:center;gap:12px}
-.tier-header .back{font-size:24px}
 .tier-title-input{font-size:18px;font-weight:700;background:transparent;border:none;padding:4px 0;width:100%;color:var(--text)}
 .tier-title-input:focus{border-bottom:2px solid var(--accent)}
-
-.tier-container{flex:1;overflow-y:auto;padding:12px;-webkit-overflow-scrolling:touch}
+.tier-wrapper{flex:1;overflow:auto;-webkit-overflow-scrolling:touch;touch-action:pan-x pan-y}
+.tier-container{transform-origin:top left;transition:transform .1s;min-width:100%;padding:12px}
 .tier-row{display:flex;margin-bottom:8px;border-radius:var(--radius);overflow:hidden;background:var(--surface);min-height:80px}
 .tier-label{width:60px;min-width:60px;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:900;color:#000;flex-shrink:0;user-select:none}
-.tier-label[data-tier="S"]{background:var(--s)}
-.tier-label[data-tier="A"]{background:var(--a)}
-.tier-label[data-tier="B"]{background:var(--b)}
-.tier-label[data-tier="C"]{background:var(--c)}
-.tier-label[data-tier="D"]{background:var(--d)}
-.tier-items{flex:1;display:flex;flex-wrap:wrap;align-content:flex-start;gap:6px;padding:8px;min-height:80px;transition:background .2s}
-.tier-items.drag-over{background:rgba(0,229,255,.08);outline:2px dashed var(--accent);outline-offset:-2px;border-radius:0 var(--radius) var(--radius) 0}
-
+.tier-label[data-t="S"]{background:var(--s)}
+.tier-label[data-t="A"]{background:var(--a)}
+.tier-label[data-t="B"]{background:var(--b)}
+.tier-label[data-t="C"]{background:var(--c)}
+.tier-label[data-t="D"]{background:var(--d)}
+.drop-zone{flex:1;display:flex;flex-wrap:wrap;align-content:flex-start;gap:6px;padding:8px;min-height:80px;transition:background .15s}
+.drop-zone.drag-over{background:rgba(0,229,255,.08);outline:2px dashed var(--accent);outline-offset:-2px;border-radius:0 var(--radius) var(--radius) 0}
 .unranked{background:var(--surface);border-radius:var(--radius);margin-top:8px;padding:12px}
-.unranked-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
-.unranked-title{font-size:14px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:1px}
-.unranked-items{display:flex;flex-wrap:wrap;gap:6px;min-height:60px;padding:4px;border-radius:8px;transition:background .2s}
-.unranked-items.drag-over{background:rgba(0,229,255,.08);outline:2px dashed var(--accent)}
+.unranked-title{font-size:14px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px}
+.unranked .drop-zone{min-height:60px;padding:4px;border-radius:8px}
 
-/* ── ITEM ── */
-.tier-item{width:64px;height:64px;border-radius:8px;overflow:visible;position:relative;cursor:grab;user-select:none;background:var(--surface2);border:2px solid transparent;transition:all .15s;flex-shrink:0}
-.tier-item:hover{border-color:var(--accent)}
-.tier-item.dragging{opacity:.4;transform:scale(.9)}
-.tier-item-inner{width:100%;height:100%;border-radius:6px;overflow:hidden;position:relative}
-.tier-item img{width:100%;height:100%;object-fit:cover;pointer-events:none}
-.tier-item .item-name{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,.85));color:#fff;font-size:9px;padding:2px 3px;text-align:center;line-height:1.2;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;pointer-events:none}
-/* ── ITEM CONTEXT MODAL ── */
-.item-context-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);z-index:250;display:flex;align-items:flex-end;justify-content:center;padding:0;opacity:0;pointer-events:none;transition:opacity .2s}
-.item-context-overlay.active{opacity:1;pointer-events:auto}
-.item-context-sheet{background:var(--surface);border:1px solid var(--surface3);border-radius:16px 16px 0 0;padding:20px;width:100%;max-width:400px;transform:translateY(100%);transition:transform .25s}
-.item-context-overlay.active .item-context-sheet{transform:translateY(0)}
-.item-context-header{display:flex;align-items:center;gap:12px;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--surface3)}
-.item-context-thumb{width:56px;height:56px;border-radius:10px;overflow:hidden;background:var(--surface2);flex-shrink:0;cursor:pointer;position:relative}
-.item-context-thumb img{width:100%;height:100%;object-fit:cover}
-.item-context-thumb .zoom-hint{position:absolute;inset:0;background:rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;font-size:20px;opacity:0;transition:opacity .15s}
-.item-context-thumb:hover .zoom-hint{opacity:1}
-.fullscreen-img{position:fixed;inset:0;z-index:300;background:#000;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s}
-.fullscreen-img.active{opacity:1;pointer-events:auto}
-.fullscreen-img img{width:100%;height:100%;object-fit:contain}
-.fullscreen-img .fs-close{position:absolute;top:16px;right:16px;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.15);color:#fff;font-size:22px;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:2;backdrop-filter:blur(8px)}
-.item-context-name{font-size:16px;font-weight:700;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.item-context-actions{display:flex;flex-direction:column;gap:8px}
-.item-context-btn{display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:10px;font-size:15px;font-weight:500;transition:background .15s;width:100%;text-align:left}
-.item-context-btn:hover{background:var(--surface2)}
-.item-context-btn .ctx-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
-.item-context-btn.edit-ctx .ctx-icon{background:rgba(0,229,255,.15);color:var(--accent)}
-.item-context-btn.delete-ctx .ctx-icon{background:rgba(255,23,68,.15);color:var(--s)}
+.tier-item{width:64px;height:64px;border-radius:8px;overflow:hidden;position:relative;cursor:grab;user-select:none;background:var(--surface2);border:2px solid transparent;flex-shrink:0;-webkit-touch-callout:none}
+.tier-item:active{border-color:var(--accent)}
+.tier-item.dragging{opacity:.3;transform:scale(.85)}
+.tier-item img{width:100%;height:100%;pointer-events:none;display:block}
+.tier-item .iname{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,.85));color:#fff;font-size:9px;padding:2px 3px;text-align:center;line-height:1.2;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;pointer-events:none}
 
-/* ── MODALS ── */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .25s}
-.modal-overlay.active{opacity:1;pointer-events:auto}
-.modal{background:var(--surface);border:1px solid var(--surface3);border-radius:16px;padding:24px;width:100%;max-width:400px;box-shadow:0 20px 60px rgba(0,0,0,.5);transform:translateY(20px);transition:transform .25s}
-.modal-overlay.active .modal{transform:translateY(0)}
+.drag-ghost{position:fixed;z-index:999;pointer-events:none;width:72px;height:72px;border-radius:10px;overflow:hidden;box-shadow:0 8px 32px rgba(0,229,255,.3);border:2px solid var(--accent);transform:translate(-50%,-50%);opacity:.9}
+.drag-ghost img{width:100%;height:100%;object-fit:cover}
+.drag-placeholder{width:64px;height:64px;border-radius:8px;border:2px dashed var(--accent);background:rgba(0,229,255,.06);flex-shrink:0;pointer-events:none}
+
+.zoom-btn{position:fixed;bottom:24px;right:24px;width:48px;height:48px;border-radius:50%;background:var(--surface);border:2px solid var(--accent);display:none;align-items:center;justify-content:center;font-size:18px;color:var(--accent);cursor:pointer;z-index:60;box-shadow:0 4px 16px rgba(0,0,0,.5)}
+.zoom-btn.visible{display:flex}
+.zoomed .tier-item{pointer-events:none!important;cursor:default}
+.zoomed .drop-zone{pointer-events:none}
+
+/* MODALS — no transitions, instant show/hide for Safari iOS reliability */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);z-index:200;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-bg.open{display:flex}
+.modal{background:var(--surface);border:1px solid var(--surface3);border-radius:16px;padding:24px;width:100%;max-width:400px;box-shadow:0 20px 60px rgba(0,0,0,.5)}
 .modal h2{font-size:20px;margin-bottom:16px}
-.modal-field{margin-bottom:16px}
-.modal-field label{display:block;font-size:13px;color:var(--text2);margin-bottom:6px}
-.modal-field input,.modal-field select{width:100%}
-.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:20px}
+.mfield{margin-bottom:16px}
+.mfield label{display:block;font-size:13px;color:var(--text2);margin-bottom:6px}
+.mfield input,.mfield select{width:100%}
+.mactions{display:flex;gap:8px;justify-content:flex-end;margin-top:20px}
 
-.img-preview-container{margin-top:8px;display:none;align-items:flex-start;gap:12px}
-.img-preview-container.visible{display:flex}
-.img-preview{width:80px;height:80px;border-radius:10px;border:2px solid var(--surface3);flex-shrink:0;overflow:hidden}
-.img-preview img{width:100%;height:100%}
-.img-fit-options{display:flex;flex-direction:column;gap:6px}
-.img-fit-options label{font-size:12px;color:var(--text2);margin-bottom:0;display:flex;align-items:center;gap:6px;cursor:pointer}
-.img-fit-options input[type="radio"]{accent-color:var(--accent);width:auto;padding:0}
-.file-label{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;background:var(--surface2);border:1px solid var(--surface3);border-radius:8px;cursor:pointer;font-size:14px;transition:all .2s}
-.file-label:hover{border-color:var(--accent)}
+.img-prev-wrap{margin-top:8px;display:none;align-items:flex-start;gap:12px}
+.img-prev-wrap.visible{display:flex}
+.img-prev{width:80px;height:80px;border-radius:10px;border:2px solid var(--surface3);flex-shrink:0;overflow:hidden}
+.img-prev img{width:100%;height:100%}
+.fit-opts{display:flex;flex-direction:column;gap:6px}
+.fit-opts label{font-size:12px;color:var(--text2);margin-bottom:0;display:flex;align-items:center;gap:6px;cursor:pointer}
+.fit-opts input[type="radio"]{accent-color:var(--accent);width:auto;padding:0}
+.file-label{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;background:var(--surface2);border:1px solid var(--surface3);border-radius:8px;cursor:pointer;font-size:14px}
 
-.export-canvas{position:fixed;top:-9999px;left:-9999px}
+/* CONTEXT SHEET */
+.ctx-bg{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);z-index:250;display:none;align-items:flex-end;justify-content:center}
+.ctx-bg.open{display:flex}
+.ctx-sheet{background:var(--surface);border:1px solid var(--surface3);border-radius:16px 16px 0 0;padding:20px;width:100%;max-width:400px}
+.ctx-header{display:flex;align-items:center;gap:12px;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--surface3)}
+.ctx-thumb{width:56px;height:56px;border-radius:10px;overflow:hidden;background:var(--surface2);flex-shrink:0;cursor:pointer;position:relative}
+.ctx-thumb img{width:100%;height:100%;object-fit:cover}
+.ctx-thumb .zh{position:absolute;inset:0;background:rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;font-size:20px;opacity:0;transition:opacity .15s}
+.ctx-thumb:hover .zh{opacity:1}
+.ctx-name{font-size:16px;font-weight:700;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ctx-actions{display:flex;flex-direction:column;gap:8px}
+.ctx-btn{display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:10px;font-size:15px;font-weight:500;width:100%;text-align:left}
+.ctx-btn:hover{background:var(--surface2)}
+.ctx-btn .ci{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
 
-/* ── TOAST ── */
-.toast{position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-80px);background:var(--surface2);border:1px solid var(--surface3);padding:10px 20px;border-radius:10px;font-size:14px;z-index:300;transition:transform .3s;pointer-events:none;box-shadow:0 8px 24px rgba(0,0,0,.5)}
+/* FULLSCREEN */
+.fs-bg{position:fixed;inset:0;z-index:300;background:#000;display:none;align-items:center;justify-content:center}
+.fs-bg.open{display:flex}
+.fs-bg img{width:100%;height:100%;object-fit:contain}
+.fs-close{position:absolute;top:16px;right:16px;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.15);color:#fff;font-size:22px;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:2;backdrop-filter:blur(8px)}
+
+.toast{position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-80px);background:var(--surface2);border:1px solid var(--surface3);padding:10px 20px;border-radius:10px;font-size:14px;z-index:400;transition:transform .3s;pointer-events:none;box-shadow:0 8px 24px rgba(0,0,0,.5)}
 .toast.show{transform:translateX(-50%) translateY(0)}
 
-.drag-ghost{position:fixed;z-index:999;pointer-events:none;width:64px;height:64px;border-radius:8px;overflow:hidden;box-shadow:0 8px 32px rgba(0,229,255,.3);border:2px solid var(--accent);transform:translate(-50%,-50%);transition:none}
-.drag-ghost img{width:100%;height:100%;object-fit:cover}
-
-/* ── DRAG PLACEHOLDER ── */
-.drag-placeholder{width:64px;height:64px;border-radius:8px;border:2px dashed var(--accent);background:rgba(0,229,255,.08);flex-shrink:0;pointer-events:none}
-
-/* ── ZOOM ── */
-.tier-container-wrapper{flex:1;overflow:auto;-webkit-overflow-scrolling:touch;touch-action:pan-x pan-y}
-.tier-container{transform-origin:top left;transition:transform .1s ease;min-width:100%}
-.zoom-reset-btn{position:fixed;bottom:24px;right:24px;width:48px;height:48px;border-radius:50%;background:var(--surface);border:2px solid var(--accent);display:none;align-items:center;justify-content:center;font-size:18px;color:var(--accent);cursor:pointer;z-index:60;box-shadow:0 4px 16px rgba(0,0,0,.5);transition:all .2s}
-.zoom-reset-btn.visible{display:flex}
-.zoom-reset-btn:active{transform:scale(.9)}
-.tier-container.zoomed-lock .tier-item{pointer-events:none;cursor:default}
-.tier-container.zoomed-lock .tier-items{pointer-events:none}
-.tier-container.zoomed-lock .unranked-items{pointer-events:none}
+.export-canvas{position:fixed;top:-9999px;left:-9999px}
 
 @media(max-width:500px){
   .list-grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
   .tier-label{width:44px;min-width:44px;font-size:18px}
   .tier-item{width:52px;height:52px}
-  .tier-item .item-name{font-size:8px}
   .drag-placeholder{width:52px;height:52px}
-  .item-context-sheet{max-width:100%;border-radius:14px 14px 0 0}
+  .ctx-sheet{max-width:100%;border-radius:14px 14px 0 0}
 }
 </style>
 </head>
 <body>
 
+<!-- HOME -->
 <div id="homeScreen">
-  <div class="app-header">
-    <h1>TierList</h1>
-  </div>
-  <div class="home">
+  <div class="header"><h1>TierList</h1></div>
+  <div id="homeContent" style="padding:16px;max-width:800px;margin:0 auto">
     <div class="home-title">Le tue Tier List</div>
-    <div class="home-subtitle">Crea e organizza le tue classifiche</div>
+    <div class="home-sub">Crea e organizza le tue classifiche</div>
     <div class="list-grid" id="listGrid"></div>
   </div>
 </div>
 
-<div class="tier-view" id="tierView">
+<!-- TIER VIEW -->
+<div id="tierView">
   <div class="tier-header">
-    <button class="btn-icon back" id="backBtn">←</button>
-    <input class="tier-title-input" id="tierTitleInput" placeholder="Nome tier list...">
+    <button class="btn-icon" id="backBtn">←</button>
+    <input class="tier-title-input" id="tierTitle" placeholder="Nome tier list...">
     <button class="btn btn-secondary" id="exportBtn">📸</button>
-    <button class="btn btn-primary" id="addItemBtn">+ Aggiungi</button>
+    <button class="btn btn-primary" id="addBtn">+ Aggiungi</button>
   </div>
-  <div class="tier-container-wrapper" id="tierContainerWrapper">
-    <div class="tier-container" id="tierContainer">
-      <div id="tierRows"></div>
-      <div class="unranked" id="unrankedArea">
-        <div class="unranked-header">
-          <span class="unranked-title">Non classificati</span>
-        </div>
-        <div class="unranked-items" id="unrankedItems" data-tier="unranked"></div>
-      </div>
-    </div>
+  <div class="tier-wrapper" id="tierWrapper">
+    <div class="tier-container" id="tierContainer"></div>
   </div>
-  <button class="zoom-reset-btn" id="zoomResetBtn">↺</button>
+  <button class="zoom-btn" id="zoomReset">↺</button>
 </div>
 
-<!-- Modal: New List -->
-<div class="modal-overlay" id="newListModal">
+<!-- MODAL: New list -->
+<div class="modal-bg" id="mNewList">
   <div class="modal">
     <h2>Nuova Tier List</h2>
-    <div class="modal-field">
-      <label>Nome</label>
-      <input id="newListName" placeholder="es. Videogiochi, Anime, Film...">
-    </div>
-    <div class="modal-actions">
-      <button class="btn btn-secondary" onclick="closeModal('newListModal')">Annulla</button>
+    <div class="mfield"><label>Nome</label><input id="newListName" placeholder="es. Videogiochi, Anime, Film..."></div>
+    <div class="mactions">
+      <button class="btn btn-secondary" data-close="mNewList">Annulla</button>
       <button class="btn btn-primary" id="createListBtn">Crea</button>
     </div>
   </div>
 </div>
 
-<!-- Modal: Add/Edit Item -->
-<div class="modal-overlay" id="addItemModal">
+<!-- MODAL: Add/Edit item -->
+<div class="modal-bg" id="mItem">
   <div class="modal">
-    <h2 id="itemModalTitle">Aggiungi Elemento</h2>
-    <div class="modal-field">
-      <label>Nome</label>
-      <input id="itemName" placeholder="es. Dark Souls, Naruto...">
-    </div>
-    <div class="modal-field">
+    <h2 id="mItemTitle">Aggiungi Elemento</h2>
+    <div class="mfield"><label>Nome</label><input id="iName" placeholder="es. Dark Souls, Naruto..."></div>
+    <div class="mfield">
       <label>Immagine</label>
-      <label class="file-label">
-        📁 Scegli immagine
-        <input type="file" id="itemImage" accept="image/*" hidden>
-      </label>
-      <div class="img-preview-container" id="imgPreviewContainer">
-        <div class="img-preview" id="imgPreview"></div>
-        <div class="img-fit-options">
+      <label class="file-label">📁 Scegli immagine<input type="file" id="iFile" accept="image/*" hidden></label>
+      <div class="img-prev-wrap" id="iPrevWrap">
+        <div class="img-prev" id="iPrev"></div>
+        <div class="fit-opts">
           <span style="font-size:12px;color:var(--text2);font-weight:600">Inquadratura:</span>
-          <label><input type="radio" name="imgFit" value="cover" checked> Riempi (taglia)</label>
-          <label><input type="radio" name="imgFit" value="contain"> Adatta (mostra tutto)</label>
-          <label><input type="radio" name="imgFit" value="fill"> Allunga</label>
+          <label><input type="radio" name="iFit" value="cover" checked> Riempi (taglia)</label>
+          <label><input type="radio" name="iFit" value="contain"> Adatta (mostra tutto)</label>
+          <label><input type="radio" name="iFit" value="fill"> Allunga</label>
         </div>
       </div>
     </div>
-    <div class="modal-field">
+    <div class="mfield">
       <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:14px;color:var(--text)">
-        <input type="checkbox" id="itemShowName" style="accent-color:var(--accent);width:18px;height:18px">
+        <input type="checkbox" id="iShowName" style="accent-color:var(--accent);width:18px;height:18px">
         Mostra nome sull'anteprima
       </label>
     </div>
-    <div class="modal-actions">
-      <button class="btn btn-secondary" onclick="closeModal('addItemModal')">Annulla</button>
+    <div class="mactions">
+      <button class="btn btn-secondary" data-close="mItem">Annulla</button>
       <button class="btn btn-primary" id="saveItemBtn">Aggiungi</button>
     </div>
   </div>
 </div>
 
-<!-- Modal: Rename List -->
-<div class="modal-overlay" id="renameModal">
+<!-- MODAL: Rename -->
+<div class="modal-bg" id="mRename">
   <div class="modal">
     <h2>Rinomina Tier List</h2>
-    <div class="modal-field">
-      <label>Nuovo nome</label>
-      <input id="renameInput">
-    </div>
-    <div class="modal-actions">
-      <button class="btn btn-secondary" onclick="closeModal('renameModal')">Annulla</button>
-      <button class="btn btn-primary" id="renameConfirmBtn">Salva</button>
+    <div class="mfield"><label>Nuovo nome</label><input id="renameInput"></div>
+    <div class="mactions">
+      <button class="btn btn-secondary" data-close="mRename">Annulla</button>
+      <button class="btn btn-primary" id="renameBtn">Salva</button>
     </div>
   </div>
 </div>
 
-<!-- Modal: Item Context (edit/delete) -->
-<div class="item-context-overlay" id="itemContextOverlay">
-  <div class="item-context-sheet">
-    <div class="item-context-header">
-      <div class="item-context-thumb" id="ctxThumb"></div>
-      <div class="item-context-name" id="ctxName"></div>
+<!-- CONTEXT SHEET -->
+<div class="ctx-bg" id="ctxBg">
+  <div class="ctx-sheet">
+    <div class="ctx-header">
+      <div class="ctx-thumb" id="ctxThumb"></div>
+      <div class="ctx-name" id="ctxName"></div>
     </div>
-    <div class="item-context-actions">
-      <button class="item-context-btn view-ctx" id="ctxViewBtn" style="display:none"><span class="ctx-icon" style="background:rgba(124,77,255,.15);color:var(--accent2)">🔍</span>Vedi immagine</button>
-      <button class="item-context-btn edit-ctx" id="ctxEditBtn"><span class="ctx-icon">✎</span>Modifica</button>
-      <button class="item-context-btn delete-ctx" id="ctxDeleteBtn"><span class="ctx-icon">🗑</span>Elimina</button>
+    <div class="ctx-actions">
+      <button class="ctx-btn" id="ctxView" style="display:none"><span class="ci" style="background:rgba(124,77,255,.15);color:var(--accent2)">🔍</span>Vedi immagine</button>
+      <button class="ctx-btn" id="ctxEdit"><span class="ci" style="background:rgba(0,229,255,.15);color:var(--accent)">✎</span>Modifica</button>
+      <button class="ctx-btn" id="ctxDelete"><span class="ci" style="background:rgba(255,23,68,.15);color:var(--s)">🗑</span>Elimina</button>
     </div>
   </div>
 </div>
 
-<div class="fullscreen-img" id="fullscreenImg"><img id="fullscreenImgSrc"><button class="fs-close" id="fsClose">✕</button></div>
+<!-- FULLSCREEN IMAGE -->
+<div class="fs-bg" id="fsBg"><img id="fsImg"><button class="fs-close" id="fsClose">✕</button></div>
+
 <div class="toast" id="toast"></div>
 <canvas class="export-canvas" id="exportCanvas"></canvas>
 
 <script>
+'use strict';
+
 const TIERS = ['S','A','B','C','D'];
 const TIER_COLORS = {S:'#ff1744',A:'#ff9100',B:'#ffea00',C:'#69f0ae',D:'#448aff'};
 let data = JSON.parse(localStorage.getItem('tierlist_data') || '{"lists":[]}');
 let currentListId = null;
-let dragItem = null;
-let dragGhost = null;
-let touchStartX = 0, touchStartY = 0;
 let editingItemId = null;
-let pendingImgData = null;
+let pendingImg = null;
+let contextItemId = null;
+let renameListId = null;
 
-function save() { localStorage.setItem('tierlist_data', JSON.stringify(data)); }
-function genId() { return Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
-function getList() { return data.lists.find(l => l.id === currentListId); }
-function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+// ── UTILS ──
+const $ = id => document.getElementById(id);
+const save = () => localStorage.setItem('tierlist_data', JSON.stringify(data));
+const genId = () => Date.now().toString(36) + Math.random().toString(36).slice(2,6);
+const getList = () => data.lists.find(l => l.id === currentListId);
+const esc = s => { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; };
 
-function buildCardPreview(list) {
-  if (!list.tiers || !list.items || !list.items.length) return '';
-  let html = '';
-  const MAX_PER_TIER = 5;
-  for (const tier of ['S','A','B']) {
-    const ids = list.tiers[tier] || [];
-    if (!ids.length) continue;
-    const items = ids.map(id => list.items.find(i => i.id === id)).filter(Boolean);
-    const shown = items.slice(0, MAX_PER_TIER);
-    const remaining = items.length - MAX_PER_TIER;
-    let thumbs = shown.map(item =>
-      item.img ? `<div class="mini-thumb"><img src="${item.img}"></div>` : `<div class="mini-thumb"></div>`
-    ).join('');
-    if (remaining > 0) thumbs += `<div class="mini-more">+${remaining}</div>`;
-    html += `<div class="mini-tier-row"><div class="mini-tier-label" data-tier="${tier}">${tier}</div><div class="mini-tier-items">${thumbs}</div></div>`;
-  }
-  return html;
-}
-
-// ── TOAST ──
 function toast(msg) {
-  const t = document.getElementById('toast');
+  const t = $('toast');
   t.textContent = msg;
   t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 1800);
 }
 
-// ── MODALS ──
-function openModal(id) { document.getElementById(id).classList.add('active'); }
-function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+function openModal(id) { $(id).classList.add('open'); }
+function closeModal(id) { $(id).classList.remove('open'); }
 
-// ── HOME SCREEN ──
+document.addEventListener('click', e => {
+  const closeBtn = e.target.closest('[data-close]');
+  if (closeBtn) closeModal(closeBtn.dataset.close);
+});
+
+// ── HOME ──
 function renderHome() {
-  const grid = document.getElementById('listGrid');
+  const grid = $('listGrid');
   grid.innerHTML = '';
   data.lists.forEach(list => {
     const count = list.items ? list.items.length : 0;
     const card = document.createElement('div');
     card.className = 'list-card';
+    card.dataset.listId = list.id;
     card.innerHTML = `
-      <div class="list-card-actions">
-        <button class="rename-btn" data-id="${list.id}" title="Rinomina">✏️</button>
-        <button class="delete-list-btn" data-id="${list.id}" title="Elimina">🗑️</button>
+      <div class="card-actions">
+        <button data-action="rename" data-id="${list.id}" title="Rinomina">✏️</button>
+        <button data-action="delete-list" data-id="${list.id}" title="Elimina">🗑️</button>
       </div>
       <div class="list-card-name">${esc(list.name)}</div>
       <div class="list-card-count">${count} element${count !== 1 ? 'i' : 'o'}</div>
-      <div class="list-card-preview">${buildCardPreview(list)}</div>
-    `;
-    card.addEventListener('click', (e) => {
-      if (e.target.closest('.rename-btn') || e.target.closest('.delete-list-btn')) return;
-      openList(list.id);
-    });
-    card.querySelector('.rename-btn').addEventListener('click', (e) => { e.stopPropagation(); startRename(list.id); });
-    card.querySelector('.delete-list-btn').addEventListener('click', (e) => { e.stopPropagation(); deleteList(list.id); });
+      <div class="list-card-preview">${buildPreview(list)}</div>`;
     grid.appendChild(card);
   });
   const add = document.createElement('div');
   add.className = 'list-card add-card';
   add.innerHTML = '<span class="plus">+</span><span>Nuova Lista</span>';
-  add.addEventListener('click', () => {
-    document.getElementById('newListName').value = '';
-    openModal('newListModal');
-    setTimeout(() => document.getElementById('newListName').focus(), 100);
-  });
+  add.addEventListener('click', () => { $('newListName').value = ''; openModal('mNewList'); });
   grid.appendChild(add);
 }
 
-// ── LIST CRUD ──
-document.getElementById('createListBtn').addEventListener('click', () => {
-  const name = document.getElementById('newListName').value.trim();
+function buildPreview(list) {
+  if (!list.tiers || !list.items?.length) return '';
+  let h = '';
+  for (const t of ['S','A','B']) {
+    const ids = list.tiers[t] || [];
+    if (!ids.length) continue;
+    const items = ids.map(id => list.items.find(i => i.id === id)).filter(Boolean);
+    const shown = items.slice(0, 5);
+    const rem = items.length - 5;
+    let thumbs = shown.map(i => i.img ? `<div class="mt"><img src="${i.img}"></div>` : `<div class="mt"></div>`).join('');
+    if (rem > 0) thumbs += `<div class="mm">+${rem}</div>`;
+    h += `<div class="mini-row"><div class="mini-label" data-t="${t}">${t}</div><div class="mini-items">${thumbs}</div></div>`;
+  }
+  return h;
+}
+
+// Home click delegation
+$('listGrid').addEventListener('click', e => {
+  const actionBtn = e.target.closest('[data-action]');
+  if (actionBtn) {
+    e.stopPropagation();
+    const id = actionBtn.dataset.id;
+    if (actionBtn.dataset.action === 'rename') {
+      renameListId = id;
+      $('renameInput').value = data.lists.find(l => l.id === id).name;
+      openModal('mRename');
+    } else if (actionBtn.dataset.action === 'delete-list') {
+      if (confirm('Eliminare questa tier list?')) {
+        data.lists = data.lists.filter(l => l.id !== id);
+        save(); renderHome(); toast('Lista eliminata');
+      }
+    }
+    return;
+  }
+  const card = e.target.closest('.list-card:not(.add-card)');
+  if (card) openList(card.dataset.listId);
+});
+
+// ── CREATE LIST ──
+$('createListBtn').addEventListener('click', () => {
+  const name = $('newListName').value.trim();
   if (!name) return;
-  const list = { id: genId(), name, items: [], tiers: { S:[], A:[], B:[], C:[], D:[], unranked:[] } };
-  data.lists.push(list);
-  save();
-  closeModal('newListModal');
-  renderHome();
-  toast('Lista creata!');
+  data.lists.push({ id: genId(), name, items: [], tiers: { S:[], A:[], B:[], C:[], D:[], unranked:[] } });
+  save(); closeModal('mNewList'); renderHome(); toast('Lista creata!');
 });
-document.getElementById('newListName').addEventListener('keydown', e => {
-  if (e.key === 'Enter') document.getElementById('createListBtn').click();
-});
+$('newListName').addEventListener('keydown', e => { if (e.key === 'Enter') $('createListBtn').click(); });
 
-function deleteList(id) {
-  if (!confirm('Eliminare questa tier list?')) return;
-  data.lists = data.lists.filter(l => l.id !== id);
-  save();
-  renderHome();
-  toast('Lista eliminata');
-}
-
-let renameListId = null;
-function startRename(id) {
-  renameListId = id;
-  const list = data.lists.find(l => l.id === id);
-  document.getElementById('renameInput').value = list.name;
-  openModal('renameModal');
-  setTimeout(() => document.getElementById('renameInput').focus(), 100);
-}
-document.getElementById('renameConfirmBtn').addEventListener('click', () => {
-  const name = document.getElementById('renameInput').value.trim();
+// ── RENAME LIST ──
+$('renameBtn').addEventListener('click', () => {
+  const name = $('renameInput').value.trim();
   if (!name) return;
   const list = data.lists.find(l => l.id === renameListId);
   if (list) { list.name = name; save(); renderHome(); }
-  closeModal('renameModal');
+  closeModal('mRename');
 });
-document.getElementById('renameInput').addEventListener('keydown', e => {
-  if (e.key === 'Enter') document.getElementById('renameConfirmBtn').click();
-});
-
-// ── PINCH ZOOM ──
-let zoomScale = 1;
-let lastPinchDist = 0;
-let isZoomed = false;
-
-function updateZoom() {
-  const container = document.getElementById('tierContainer');
-  container.style.transform = `scale(${zoomScale})`;
-  container.style.width = (100 / zoomScale) + '%';
-  isZoomed = Math.abs(zoomScale - 1) > 0.05;
-  document.getElementById('zoomResetBtn').classList.toggle('visible', isZoomed);
-  document.getElementById('tierContainer').classList.toggle('zoomed-lock', isZoomed);
-}
-
-function getPinchDist(touches) {
-  const dx = touches[0].clientX - touches[1].clientX;
-  const dy = touches[0].clientY - touches[1].clientY;
-  return Math.sqrt(dx * dx + dy * dy);
-}
-
-const wrapper = document.getElementById('tierContainerWrapper');
-wrapper.addEventListener('touchstart', (e) => {
-  if (e.touches.length === 2) {
-    e.preventDefault();
-    lastPinchDist = getPinchDist(e.touches);
-  }
-}, { passive: false });
-wrapper.addEventListener('touchmove', (e) => {
-  if (e.touches.length === 2) {
-    e.preventDefault();
-    const dist = getPinchDist(e.touches);
-    const delta = dist / lastPinchDist;
-    zoomScale = Math.max(0.5, Math.min(3, zoomScale * delta));
-    lastPinchDist = dist;
-    updateZoom();
-  }
-}, { passive: false });
-
-document.getElementById('zoomResetBtn').addEventListener('click', () => {
-  zoomScale = 1;
-  updateZoom();
-});
+$('renameInput').addEventListener('keydown', e => { if (e.key === 'Enter') $('renameBtn').click(); });
 
 // ── TIER VIEW ──
 function openList(id) {
   currentListId = id;
   const list = getList();
   if (!list.tiers) list.tiers = { S:[], A:[], B:[], C:[], D:[], unranked:[] };
-  document.getElementById('tierTitleInput').value = list.name;
-  document.getElementById('homeScreen').style.display = 'none';
-  document.getElementById('tierView').classList.add('active');
-  zoomScale = 1; updateZoom();
+  $('tierTitle').value = list.name;
+  $('homeScreen').style.display = 'none';
+  $('tierView').classList.add('active');
+  zoomScale = 1; applyZoom();
   renderTiers();
 }
 
-document.getElementById('backBtn').addEventListener('click', () => {
-  document.getElementById('tierView').classList.remove('active');
-  document.getElementById('homeScreen').style.display = '';
-  zoomScale = 1; updateZoom();
+$('backBtn').addEventListener('click', () => {
+  $('tierView').classList.remove('active');
+  $('homeScreen').style.display = '';
   currentListId = null;
+  zoomScale = 1; applyZoom();
   renderHome();
 });
 
-document.getElementById('tierTitleInput').addEventListener('input', () => {
+$('tierTitle').addEventListener('input', () => {
   const list = getList();
-  if (list) { list.name = document.getElementById('tierTitleInput').value; save(); }
+  if (list) { list.name = $('tierTitle').value; save(); }
 });
 
 function renderTiers() {
   const list = getList();
   if (!list) return;
-  const rows = document.getElementById('tierRows');
-  rows.innerHTML = '';
+  const container = $('tierContainer');
+  container.innerHTML = '';
+
   TIERS.forEach(tier => {
     const row = document.createElement('div');
     row.className = 'tier-row';
-    row.innerHTML = `<div class="tier-label" data-tier="${tier}">${tier}</div>`;
-    const items = document.createElement('div');
-    items.className = 'tier-items';
-    items.dataset.tier = tier;
+    const label = document.createElement('div');
+    label.className = 'tier-label';
+    label.dataset.t = tier;
+    label.textContent = tier;
+    row.appendChild(label);
+
+    const zone = document.createElement('div');
+    zone.className = 'drop-zone';
+    zone.dataset.tier = tier;
     (list.tiers[tier] || []).forEach(itemId => {
       const item = list.items.find(i => i.id === itemId);
-      if (item) items.appendChild(createItemEl(item));
+      if (item) zone.appendChild(makeItemEl(item));
     });
-    setupDropZone(items);
-    row.appendChild(items);
-    rows.appendChild(row);
+    row.appendChild(zone);
+    container.appendChild(row);
   });
-  const unranked = document.getElementById('unrankedItems');
-  unranked.innerHTML = '';
+
+  const unranked = document.createElement('div');
+  unranked.className = 'unranked';
+  unranked.innerHTML = '<div class="unranked-title">Non classificati</div>';
+  const uZone = document.createElement('div');
+  uZone.className = 'drop-zone';
+  uZone.dataset.tier = 'unranked';
   (list.tiers.unranked || []).forEach(itemId => {
     const item = list.items.find(i => i.id === itemId);
-    if (item) unranked.appendChild(createItemEl(item));
+    if (item) uZone.appendChild(makeItemEl(item));
   });
-  setupDropZone(unranked);
+  unranked.appendChild(uZone);
+  container.appendChild(unranked);
 }
 
-function createItemEl(item) {
+function makeItemEl(item) {
   const el = document.createElement('div');
   el.className = 'tier-item';
   el.dataset.id = item.id;
-  el.draggable = true;
   const fit = item.fit || 'cover';
-  el.innerHTML = `
-    <div class="item-inner" style="width:100%;height:100%;border-radius:6px;overflow:hidden;position:relative">
-      ${item.img ? `<img src="${item.img}" alt="${esc(item.name)}" style="object-fit:${fit}">` : ''}
-      ${item.showName ? `<div class="item-name">${esc(item.name)}</div>` : ''}
-    </div>
-  `;
-  el.addEventListener('click', (e) => {
-    if (isZoomed || el.classList.contains('dragging')) return;
-    e.stopPropagation();
-    openItemContext(item.id);
-  });
-  el.addEventListener('dragstart', (e) => {
-    if (isZoomed) { e.preventDefault(); return; }
-    dragItem = item.id;
-    el.classList.add('dragging');
-    e.dataTransfer.effectAllowed = 'move';
-    e.dataTransfer.setData('text/plain', item.id);
-  });
-  el.addEventListener('dragend', () => {
-    el.classList.remove('dragging');
-    dragItem = null;
-    clearHighlights();
-  });
-  el.addEventListener('touchstart', handleTouchStart, { passive: false });
-  el.addEventListener('touchmove', handleTouchMove, { passive: false });
-  el.addEventListener('touchend', handleTouchEnd);
+  if (item.img) {
+    const img = document.createElement('img');
+    img.src = item.img;
+    img.alt = item.name;
+    img.style.objectFit = fit;
+    el.appendChild(img);
+  }
+  if (item.showName) {
+    const n = document.createElement('div');
+    n.className = 'iname';
+    n.textContent = item.name;
+    el.appendChild(n);
+  }
   return el;
 }
 
-// ── ITEM CONTEXT MODAL ──
-let contextItemId = null;
+// ── ITEM CONTEXT (tap on item) ──
 function openItemContext(id) {
   const list = getList();
   const item = list.items.find(i => i.id === id);
   if (!item) return;
   contextItemId = id;
-  document.getElementById('ctxName').textContent = item.name;
-  const thumb = document.getElementById('ctxThumb');
-  thumb.innerHTML = item.img ? `<img src="${item.img}"><span class="zoom-hint">🔍</span>` : '';
-  const showFullscreen = () => {
-    document.getElementById('fullscreenImgSrc').src = item.img;
-    document.getElementById('fullscreenImg').classList.add('active');
-  };
-  thumb.onclick = item.img ? showFullscreen : null;
-  const viewBtn = document.getElementById('ctxViewBtn');
-  if (item.img) { viewBtn.style.display = ''; viewBtn.onclick = showFullscreen; }
-  else { viewBtn.style.display = 'none'; }
-  document.getElementById('itemContextOverlay').classList.add('active');
+  $('ctxName').textContent = item.name;
+  const thumb = $('ctxThumb');
+  thumb.innerHTML = item.img ? `<img src="${item.img}"><span class="zh">🔍</span>` : '';
+  thumb.onclick = item.img ? () => showFullscreen(item.img) : null;
+  const vb = $('ctxView');
+  if (item.img) { vb.style.display = ''; vb.onclick = () => showFullscreen(item.img); }
+  else vb.style.display = 'none';
+  $('ctxBg').classList.add('open');
 }
-function closeItemContext() {
-  document.getElementById('itemContextOverlay').classList.remove('active');
-  contextItemId = null;
-}
-document.getElementById('itemContextOverlay').addEventListener('click', (e) => {
-  if (e.target === document.getElementById('itemContextOverlay')) closeItemContext();
-});
-document.getElementById('fsClose').addEventListener('click', () => {
-  document.getElementById('fullscreenImg').classList.remove('active');
-});
-document.getElementById('fullscreenImg').addEventListener('click', (e) => {
-  if (e.target === document.getElementById('fullscreenImg')) {
-    document.getElementById('fullscreenImg').classList.remove('active');
-  }
-});
-document.getElementById('ctxEditBtn').addEventListener('click', () => {
+function closeCtx() { $('ctxBg').classList.remove('open'); contextItemId = null; }
+$('ctxBg').addEventListener('click', e => { if (e.target === $('ctxBg')) closeCtx(); });
+
+function showFullscreen(src) { $('fsImg').src = src; $('fsBg').classList.add('open'); }
+$('fsClose').addEventListener('click', () => $('fsBg').classList.remove('open'));
+$('fsBg').addEventListener('click', e => { if (e.target === $('fsBg')) $('fsBg').classList.remove('open'); });
+
+$('ctxEdit').addEventListener('click', () => {
   const id = contextItemId;
-  closeItemContext();
-  setTimeout(() => openEditItem(id), 150);
+  closeCtx();
+  openEditItem(id);
 });
-document.getElementById('ctxDeleteBtn').addEventListener('click', () => {
+$('ctxDelete').addEventListener('click', () => {
   const id = contextItemId;
-  closeItemContext();
+  closeCtx();
   deleteItem(id);
 });
 
-// ── EDIT ITEM ──
+// ── ADD/EDIT ITEM ──
+$('addBtn').addEventListener('click', () => {
+  editingItemId = null;
+  pendingImg = null;
+  $('mItemTitle').textContent = 'Aggiungi Elemento';
+  $('iName').value = '';
+  $('iFile').value = '';
+  $('saveItemBtn').textContent = 'Aggiungi';
+  $('iShowName').checked = false;
+  $('iPrev').innerHTML = '';
+  $('iPrevWrap').classList.remove('visible');
+  document.querySelector('input[name="iFit"][value="cover"]').checked = true;
+  openModal('mItem');
+});
+
 function openEditItem(id) {
   const list = getList();
   const item = list.items.find(i => i.id === id);
   if (!item) return;
   editingItemId = id;
-  pendingImgData = item.img || null;
-  document.getElementById('itemModalTitle').textContent = 'Modifica Elemento';
-  document.getElementById('itemName').value = item.name;
-  document.getElementById('itemImage').value = '';
-  document.getElementById('saveItemBtn').textContent = 'Salva';
-  document.getElementById('itemShowName').checked = !!item.showName;
-  const container = document.getElementById('imgPreviewContainer');
-  const preview = document.getElementById('imgPreview');
+  pendingImg = item.img || null;
+  $('mItemTitle').textContent = 'Modifica Elemento';
+  $('iName').value = item.name;
+  $('iFile').value = '';
+  $('saveItemBtn').textContent = 'Salva';
+  $('iShowName').checked = !!item.showName;
   if (item.img) {
     const fit = item.fit || 'cover';
-    preview.innerHTML = `<img src="${item.img}" style="object-fit:${fit}">`;
-    container.classList.add('visible');
-    const radio = document.querySelector(`input[name="imgFit"][value="${fit}"]`);
-    if (radio) radio.checked = true;
+    $('iPrev').innerHTML = `<img src="${item.img}" style="object-fit:${fit}">`;
+    $('iPrevWrap').classList.add('visible');
+    const r = document.querySelector(`input[name="iFit"][value="${fit}"]`);
+    if (r) r.checked = true;
   } else {
-    preview.innerHTML = '';
-    container.classList.remove('visible');
+    $('iPrev').innerHTML = '';
+    $('iPrevWrap').classList.remove('visible');
   }
-  openModal('addItemModal');
-  setTimeout(() => document.getElementById('itemName').focus(), 100);
+  openModal('mItem');
 }
 
-// ── DRAG & DROP ──
-let currentPlaceholder = null;
-let touchDragging = false;
-let touchMoved = false;
-let activeDragEl = null;
+$('iFile').addEventListener('change', e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => { pendingImg = reader.result; updatePreview(); };
+  reader.readAsDataURL(file);
+});
 
-function createPlaceholder() {
-  const ph = document.createElement('div');
-  ph.className = 'drag-placeholder';
-  return ph;
+document.querySelectorAll('input[name="iFit"]').forEach(r => r.addEventListener('change', updatePreview));
+
+function updatePreview() {
+  if (!pendingImg) return;
+  const fit = document.querySelector('input[name="iFit"]:checked').value;
+  $('iPrev').innerHTML = `<img src="${pendingImg}" style="object-fit:${fit}">`;
+  $('iPrevWrap').classList.add('visible');
 }
 
-function removePlaceholder() {
-  if (currentPlaceholder) { currentPlaceholder.remove(); currentPlaceholder = null; }
-}
-
-function getInsertIndexFromXY(zone, x, y) {
-  const items = [...zone.querySelectorAll('.tier-item:not(.dragging)')];
-  if (!items.length) return 0;
-  let bestIdx = items.length;
-  let bestDist = Infinity;
-  for (let i = 0; i < items.length; i++) {
-    const r = items[i].getBoundingClientRect();
-    const cx = r.left + r.width / 2, cy = r.top + r.height / 2;
-    const dist = Math.abs(y - cy) * 2 + Math.abs(x - cx);
-    if (dist < bestDist) { bestDist = dist; bestIdx = i; }
-  }
-  if (bestIdx < items.length) {
-    const r = items[bestIdx].getBoundingClientRect();
-    if (x > r.left + r.width / 2) bestIdx++;
-  }
-  return bestIdx;
-}
-
-function showPlaceholder(zone, x, y) {
-  if (!zone) { removePlaceholder(); return; }
-  if (!currentPlaceholder) currentPlaceholder = createPlaceholder();
-  const idx = getInsertIndexFromXY(zone, x, y);
-  const items = [...zone.querySelectorAll('.tier-item:not(.dragging)')];
-  if (idx < items.length) zone.insertBefore(currentPlaceholder, items[idx]);
-  else zone.appendChild(currentPlaceholder);
-}
-
-function getPlaceholderIndex(zone) {
-  if (!currentPlaceholder) return undefined;
-  let idx = 0;
-  for (const child of zone.children) {
-    if (child === currentPlaceholder) return idx;
-    if (child.classList.contains('tier-item') && !child.classList.contains('dragging')) idx++;
-  }
-  return idx;
-}
-
-function setupDropZone(zone) {
-  zone.addEventListener('dragover', (e) => {
-    e.preventDefault();
-    e.dataTransfer.dropEffect = 'move';
-    zone.classList.add('drag-over');
-    showPlaceholder(zone, e.clientX, e.clientY);
-  });
-  zone.addEventListener('dragleave', (e) => {
-    if (!zone.contains(e.relatedTarget)) {
-      zone.classList.remove('drag-over');
-      removePlaceholder();
-    }
-  });
-  zone.addEventListener('drop', (e) => {
-    e.preventDefault();
-    zone.classList.remove('drag-over');
-    const insertIdx = getPlaceholderIndex(zone);
-    removePlaceholder();
-    const itemId = e.dataTransfer.getData('text/plain');
-    if (itemId) moveItem(itemId, zone.dataset.tier, insertIdx);
-  });
-}
-
-function moveItem(itemId, toTier, insertIdx) {
+$('saveItemBtn').addEventListener('click', () => {
+  const name = $('iName').value.trim();
+  if (!name) return;
   const list = getList();
   if (!list) return;
-  Object.keys(list.tiers).forEach(t => {
-    list.tiers[t] = list.tiers[t].filter(id => id !== itemId);
-  });
-  if (!list.tiers[toTier]) list.tiers[toTier] = [];
-  if (insertIdx !== undefined && insertIdx <= list.tiers[toTier].length) {
-    list.tiers[toTier].splice(insertIdx, 0, itemId);
+  const fit = document.querySelector('input[name="iFit"]:checked').value;
+  const showName = $('iShowName').checked;
+  const file = $('iFile').files[0];
+
+  const finish = (imgData) => {
+    closeModal('mItem');
+    if (editingItemId) {
+      const item = list.items.find(i => i.id === editingItemId);
+      if (item) {
+        item.name = name; item.fit = fit; item.showName = showName;
+        if (imgData !== undefined) item.img = imgData;
+      }
+      save(); renderTiers(); toast('Elemento modificato!');
+    } else {
+      const item = { id: genId(), name, img: imgData || '', fit, showName };
+      list.items.push(item);
+      if (!list.tiers.unranked) list.tiers.unranked = [];
+      list.tiers.unranked.push(item.id);
+      save(); renderTiers(); toast('Elemento aggiunto!');
+    }
+    editingItemId = null; pendingImg = null;
+  };
+
+  if (file) {
+    processImage(file, dataUrl => finish(dataUrl));
+  } else if (editingItemId && pendingImg) {
+    finish(undefined);
   } else {
-    list.tiers[toTier].push(itemId);
+    finish('');
   }
-  save();
-  forceRender();
-}
+});
 
-function clearHighlights() {
-  document.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
-}
+$('iName').addEventListener('keydown', e => { if (e.key === 'Enter') $('saveItemBtn').click(); });
 
-function getDropZone(x, y) {
-  const zones = document.querySelectorAll('.tier-items, .unranked-items');
-  let best = null, bestDist = Infinity;
-  for (const z of zones) {
-    const r = z.getBoundingClientRect();
-    if (x >= r.left && x <= r.right && y >= r.top - 20 && y <= r.bottom + 20) {
-      const cy = (r.top + r.bottom) / 2;
-      const dist = Math.abs(y - cy);
-      if (dist < bestDist) { bestDist = dist; best = z; }
+function processImage(file, cb) {
+  const img = new Image();
+  img.onload = () => {
+    const c = document.createElement('canvas');
+    const MAX = 1600;
+    let w = img.width, h = img.height;
+    if (w > MAX || h > MAX) {
+      if (w > h) { h = h * MAX / w; w = MAX; }
+      else { w = w * MAX / h; h = MAX; }
     }
-  }
-  return best;
+    c.width = w; c.height = h;
+    const ctx = c.getContext('2d');
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
+    ctx.drawImage(img, 0, 0, w, h);
+    let result = c.toDataURL('image/webp', 0.93);
+    if (result.length < 50) result = c.toDataURL('image/jpeg', 0.93);
+    cb(result);
+    URL.revokeObjectURL(img.src);
+  };
+  img.src = URL.createObjectURL(file);
 }
 
-// ── TOUCH DRAG ──
-function handleTouchStart(e) {
-  if (isZoomed || e.touches.length > 1) return;
-  const el = e.currentTarget;
-  const touch = e.touches[0];
-  touchStartX = touch.clientX;
-  touchStartY = touch.clientY;
-  touchDragging = false;
-  touchMoved = false;
-  activeDragEl = el;
-  dragItem = el.dataset.id;
-  el._touchTimeout = setTimeout(() => {
-    if (!touchMoved) {
-      touchDragging = true;
-      el.classList.add('dragging');
-      createGhostEl(el, touch.clientX, touch.clientY);
-      if (navigator.vibrate) navigator.vibrate(30);
-    }
-  }, 250);
+function deleteItem(id) {
+  const list = getList();
+  list.items = list.items.filter(i => i.id !== id);
+  Object.keys(list.tiers).forEach(t => { list.tiers[t] = list.tiers[t].filter(i => i !== id); });
+  save(); renderTiers(); toast('Elemento rimosso');
 }
 
-function handleTouchMove(e) {
-  if (isZoomed || e.touches.length > 1) { cancelDrag(); return; }
-  const touch = e.touches[0];
-  const dx = Math.abs(touch.clientX - touchStartX);
-  const dy = Math.abs(touch.clientY - touchStartY);
-  if (!touchDragging) {
-    if (dx > 10 || dy > 10) {
-      touchMoved = true;
-      clearTimeout(activeDragEl?._touchTimeout);
-    }
-    return;
-  }
-  e.preventDefault();
-  if (dragGhost) {
-    dragGhost.style.left = touch.clientX + 'px';
-    dragGhost.style.top = touch.clientY + 'px';
-  }
-  clearHighlights();
-  const zone = getDropZone(touch.clientX, touch.clientY);
-  if (zone) {
-    zone.classList.add('drag-over');
-    showPlaceholder(zone, touch.clientX, touch.clientY);
-  } else {
-    removePlaceholder();
-  }
-}
+// ── DRAG & DROP (touch + mouse via event delegation) ──
+let dragState = null;
+let dragGhost = null;
+let placeholder = null;
 
-function handleTouchEnd(e) {
-  if (!activeDragEl) return;
-  const el = activeDragEl;
-  clearTimeout(el._touchTimeout);
-  if (!touchDragging && !touchMoved) {
-    cleanupDrag();
-    openItemContext(el.dataset.id);
-    return;
-  }
-  if (touchDragging && dragItem) {
-    const touch = e.changedTouches[0];
-    const zone = getDropZone(touch.clientX, touch.clientY);
-    if (zone) {
-      const insertIdx = getInsertIndexFromXY(zone, touch.clientX, touch.clientY);
-      cleanupDrag();
-      moveItem(dragItem, zone.dataset.tier, insertIdx);
-      return;
-    }
-  }
-  cleanupDrag();
-}
-
-function cancelDrag() {
-  if (activeDragEl) {
-    clearTimeout(activeDragEl._touchTimeout);
-    cleanupDrag();
-  }
-}
-
-function cleanupDrag() {
-  if (activeDragEl) activeDragEl.classList.remove('dragging');
-  removeGhost();
-  removePlaceholder();
-  clearHighlights();
-  dragItem = null;
-  touchDragging = false;
-  touchMoved = false;
-  activeDragEl = null;
-}
-
-function createGhostEl(el, x, y) {
-  removeGhost();
+function startDrag(el, x, y) {
+  if (dragState) return;
+  const id = el.dataset.id;
+  el.classList.add('dragging');
+  dragState = { id, el, started: true };
   dragGhost = document.createElement('div');
   dragGhost.className = 'drag-ghost';
   const img = el.querySelector('img');
@@ -829,225 +629,263 @@ function createGhostEl(el, x, y) {
   dragGhost.style.left = x + 'px';
   dragGhost.style.top = y + 'px';
   document.body.appendChild(dragGhost);
+  if (navigator.vibrate) navigator.vibrate(25);
 }
 
-function removeGhost() {
-  if (dragGhost) { dragGhost.remove(); dragGhost = null; }
-}
-
-// ── ADD ITEM MODAL ──
-document.getElementById('addItemBtn').addEventListener('click', () => {
-  editingItemId = null;
-  pendingImgData = null;
-  document.getElementById('itemModalTitle').textContent = 'Aggiungi Elemento';
-  document.getElementById('itemName').value = '';
-  document.getElementById('itemImage').value = '';
-  document.getElementById('saveItemBtn').textContent = 'Aggiungi';
-  document.getElementById('itemShowName').checked = false;
-  document.getElementById('imgPreview').innerHTML = '';
-  document.getElementById('imgPreviewContainer').classList.remove('visible');
-  document.querySelector('input[name="imgFit"][value="cover"]').checked = true;
-  openModal('addItemModal');
-  setTimeout(() => document.getElementById('itemName').focus(), 100);
-});
-
-document.getElementById('itemImage').addEventListener('change', (e) => {
-  const file = e.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = () => {
-    pendingImgData = reader.result;
-    updateImgPreview();
-  };
-  reader.readAsDataURL(file);
-});
-
-document.querySelectorAll('input[name="imgFit"]').forEach(r => {
-  r.addEventListener('change', updateImgPreview);
-});
-
-function updateImgPreview() {
-  const container = document.getElementById('imgPreviewContainer');
-  const preview = document.getElementById('imgPreview');
-  const fit = document.querySelector('input[name="imgFit"]:checked').value;
-  const src = pendingImgData;
-  if (src) {
-    preview.innerHTML = `<img src="${src}" style="object-fit:${fit}">`;
-    container.classList.add('visible');
-  }
-}
-
-document.getElementById('saveItemBtn').addEventListener('click', () => {
-  const name = document.getElementById('itemName').value.trim();
-  if (!name) return;
-  const list = getList();
-  const fit = document.querySelector('input[name="imgFit"]:checked').value;
-  const showName = document.getElementById('itemShowName').checked;
-  const file = document.getElementById('itemImage').files[0];
-
-  const finishSave = (imgData) => {
-    if (editingItemId) {
-      const item = list.items.find(i => i.id === editingItemId);
-      if (item) {
-        item.name = name;
-        item.fit = fit;
-        item.showName = showName;
-        if (imgData !== undefined) item.img = imgData;
-      }
-      save();
-      closeModal('addItemModal');
-      forceRender();
-      toast('Elemento modificato!');
-    } else {
-      const item = { id: genId(), name, img: imgData || '', fit, showName };
-      list.items.push(item);
-      if (!list.tiers.unranked) list.tiers.unranked = [];
-      list.tiers.unranked.push(item.id);
-      save();
-      closeModal('addItemModal');
-      forceRender();
-      toast('Elemento aggiunto!');
-    }
-    editingItemId = null;
-    pendingImgData = null;
-  };
-
-  if (file) {
-    compressImage(file, (dataUrl) => finishSave(dataUrl));
-  } else if (editingItemId && pendingImgData) {
-    finishSave(undefined);
+function moveDrag(x, y) {
+  if (!dragState?.started) return;
+  if (dragGhost) { dragGhost.style.left = x + 'px'; dragGhost.style.top = y + 'px'; }
+  document.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
+  const zone = findDropZone(x, y);
+  if (zone) {
+    zone.classList.add('drag-over');
+    positionPlaceholder(zone, x, y);
   } else {
-    finishSave('');
+    removePlaceholder();
   }
-});
+}
 
-document.getElementById('itemName').addEventListener('keydown', e => {
-  if (e.key === 'Enter') document.getElementById('saveItemBtn').click();
-});
-
-function compressImage(file, cb) {
-  const img = new Image();
-  img.onload = () => {
-    const canvas = document.createElement('canvas');
-    const MAX = 1600;
-    let w = img.width, h = img.height;
-    if (w > MAX || h > MAX) {
-      if (w > h) { h = h * MAX / w; w = MAX; }
-      else { w = w * MAX / h; h = MAX; }
+function endDrag(x, y) {
+  if (!dragState) return;
+  const { id, el } = dragState;
+  el.classList.remove('dragging');
+  if (dragState.started) {
+    const zone = findDropZone(x, y);
+    if (zone) {
+      const idx = calcInsertIndex(zone, x, y);
+      moveItem(id, zone.dataset.tier, idx);
     }
-    canvas.width = w;
-    canvas.height = h;
-    const ctx = canvas.getContext('2d');
-    ctx.imageSmoothingEnabled = true;
-    ctx.imageSmoothingQuality = 'high';
-    ctx.drawImage(img, 0, 0, w, h);
-    cb(canvas.toDataURL('image/webp', 0.93));
-  };
-  img.src = URL.createObjectURL(file);
+  }
+  cleanup();
 }
 
-function deleteItem(id) {
-  const list = getList();
-  list.items = list.items.filter(i => i.id !== id);
-  Object.keys(list.tiers).forEach(t => {
-    list.tiers[t] = list.tiers[t].filter(i => i !== id);
-  });
-  save();
-  forceRender();
-  toast('Elemento rimosso');
+function cancelDrag() {
+  if (dragState) dragState.el.classList.remove('dragging');
+  cleanup();
 }
 
-function forceRender() {
-  renderTiers();
-  requestAnimationFrame(() => {
-    const c = document.getElementById('tierContainer');
-    c.style.display = 'none';
-    c.offsetHeight;
-    c.style.display = '';
-  });
+function cleanup() {
+  if (dragGhost) { dragGhost.remove(); dragGhost = null; }
+  removePlaceholder();
+  document.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
+  dragState = null;
 }
 
-// ── EXPORT ──
-document.getElementById('exportBtn').addEventListener('click', exportAsImage);
+function removePlaceholder() {
+  if (placeholder) { placeholder.remove(); placeholder = null; }
+}
 
-async function exportAsImage() {
+function positionPlaceholder(zone, x, y) {
+  if (!placeholder) { placeholder = document.createElement('div'); placeholder.className = 'drag-placeholder'; }
+  const idx = calcInsertIndex(zone, x, y);
+  const items = [...zone.querySelectorAll('.tier-item:not(.dragging)')];
+  if (idx < items.length) zone.insertBefore(placeholder, items[idx]);
+  else zone.appendChild(placeholder);
+}
+
+function calcInsertIndex(zone, x, y) {
+  const items = [...zone.querySelectorAll('.tier-item:not(.dragging)')];
+  if (!items.length) return 0;
+  let best = 0, bestDist = Infinity;
+  for (let i = 0; i < items.length; i++) {
+    const r = items[i].getBoundingClientRect();
+    const cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+    const d = Math.abs(y - cy) * 1.5 + Math.abs(x - cx);
+    if (d < bestDist) { bestDist = d; best = i; }
+  }
+  const r = items[best].getBoundingClientRect();
+  return x > r.left + r.width / 2 ? best + 1 : best;
+}
+
+function findDropZone(x, y) {
+  const zones = document.querySelectorAll('.drop-zone');
+  let best = null, bestDist = Infinity;
+  for (const z of zones) {
+    const r = z.getBoundingClientRect();
+    if (x >= r.left - 10 && x <= r.right + 10 && y >= r.top - 20 && y <= r.bottom + 20) {
+      const d = Math.abs(y - (r.top + r.bottom) / 2);
+      if (d < bestDist) { bestDist = d; best = z; }
+    }
+  }
+  return best;
+}
+
+function moveItem(itemId, toTier, insertIdx) {
   const list = getList();
   if (!list) return;
-  toast('Esportazione in corso...');
-  const canvas = document.getElementById('exportCanvas');
-  const ctx = canvas.getContext('2d');
-  const W = 800, ROW_H = 80, LABEL_W = 60, ITEM_SIZE = 64, PAD = 8, HEADER_H = 50;
-  const H = HEADER_H + TIERS.length * ROW_H + 20;
-  canvas.width = W;
-  canvas.height = H;
-  ctx.fillStyle = '#0a0a0f';
-  ctx.fillRect(0, 0, W, H);
-  ctx.fillStyle = '#e8e8f0';
-  ctx.font = 'bold 22px -apple-system, sans-serif';
-  ctx.fillText(list.name, 16, 34);
+  Object.keys(list.tiers).forEach(t => { list.tiers[t] = list.tiers[t].filter(id => id !== itemId); });
+  if (!list.tiers[toTier]) list.tiers[toTier] = [];
+  if (insertIdx !== undefined && insertIdx <= list.tiers[toTier].length) {
+    list.tiers[toTier].splice(insertIdx, 0, itemId);
+  } else {
+    list.tiers[toTier].push(itemId);
+  }
+  save(); renderTiers();
+}
 
-  let y = HEADER_H;
-  for (const tier of TIERS) {
-    ctx.fillStyle = TIER_COLORS[tier];
-    ctx.fillRect(0, y, LABEL_W, ROW_H);
-    ctx.fillStyle = '#000';
-    ctx.font = 'bold 28px -apple-system, sans-serif';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText(tier, LABEL_W / 2, y + ROW_H / 2);
-    ctx.textAlign = 'left';
-    ctx.textBaseline = 'alphabetic';
-    ctx.fillStyle = '#14141f';
-    ctx.fillRect(LABEL_W, y, W - LABEL_W, ROW_H);
-    const items = (list.tiers[tier] || []).map(id => list.items.find(i => i.id === id)).filter(Boolean);
-    let x = LABEL_W + PAD;
-    for (const item of items) {
-      if (item.img) {
-        try {
-          const img = await loadImg(item.img);
-          ctx.drawImage(img, x, y + PAD, ITEM_SIZE, ITEM_SIZE);
-        } catch(_) {
-          ctx.fillStyle = '#282840';
-          ctx.fillRect(x, y + PAD, ITEM_SIZE, ITEM_SIZE);
-        }
-      } else {
-        ctx.fillStyle = '#282840';
-        ctx.fillRect(x, y + PAD, ITEM_SIZE, ITEM_SIZE);
+// ── TOUCH HANDLING (delegated on tierContainer) ──
+let touchInfo = null;
+
+$('tierContainer').addEventListener('touchstart', e => {
+  if (zoomScale > 1.05 || e.touches.length > 1) return;
+  const itemEl = e.target.closest('.tier-item');
+  if (!itemEl) return;
+  const touch = e.touches[0];
+  touchInfo = {
+    el: itemEl,
+    sx: touch.clientX, sy: touch.clientY,
+    moved: false, dragging: false,
+    timer: setTimeout(() => {
+      if (touchInfo && !touchInfo.moved) {
+        touchInfo.dragging = true;
+        startDrag(itemEl, touch.clientX, touch.clientY);
       }
-      ctx.fillStyle = 'rgba(0,0,0,0.7)';
-      ctx.fillRect(x, y + PAD + ITEM_SIZE - 16, ITEM_SIZE, 16);
-      ctx.fillStyle = '#fff';
-      ctx.font = '9px -apple-system, sans-serif';
-      const label = item.name.length > 10 ? item.name.slice(0,9) + '…' : item.name;
-      ctx.fillText(label, x + 3, y + PAD + ITEM_SIZE - 4);
-      x += ITEM_SIZE + 6;
+    }, 250)
+  };
+}, { passive: true });
+
+$('tierContainer').addEventListener('touchmove', e => {
+  if (!touchInfo) return;
+  if (e.touches.length > 1) { clearTimeout(touchInfo.timer); cancelDrag(); touchInfo = null; return; }
+  const touch = e.touches[0];
+  const dx = Math.abs(touch.clientX - touchInfo.sx);
+  const dy = Math.abs(touch.clientY - touchInfo.sy);
+  if (!touchInfo.dragging) {
+    if (dx > 10 || dy > 10) {
+      touchInfo.moved = true;
+      clearTimeout(touchInfo.timer);
+    }
+    return;
+  }
+  e.preventDefault();
+  moveDrag(touch.clientX, touch.clientY);
+}, { passive: false });
+
+$('tierContainer').addEventListener('touchend', e => {
+  if (!touchInfo) return;
+  clearTimeout(touchInfo.timer);
+  const ti = touchInfo;
+  touchInfo = null;
+  if (ti.dragging) {
+    const touch = e.changedTouches[0];
+    endDrag(touch.clientX, touch.clientY);
+  } else if (!ti.moved) {
+    openItemContext(ti.el.dataset.id);
+  }
+});
+
+$('tierContainer').addEventListener('touchcancel', () => {
+  if (touchInfo) { clearTimeout(touchInfo.timer); cancelDrag(); touchInfo = null; }
+});
+
+// Mouse drag (desktop)
+$('tierContainer').addEventListener('mousedown', e => {
+  if (zoomScale > 1.05) return;
+  const itemEl = e.target.closest('.tier-item');
+  if (!itemEl || e.button !== 0) return;
+  e.preventDefault();
+  const onMove = ev => { moveDrag(ev.clientX, ev.clientY); };
+  const onUp = ev => {
+    document.removeEventListener('mousemove', onMove);
+    document.removeEventListener('mouseup', onUp);
+    endDrag(ev.clientX, ev.clientY);
+  };
+  startDrag(itemEl, e.clientX, e.clientY);
+  document.addEventListener('mousemove', onMove);
+  document.addEventListener('mouseup', onUp);
+});
+
+// Click on item (desktop, no drag)
+$('tierContainer').addEventListener('click', e => {
+  if (zoomScale > 1.05) return;
+  const itemEl = e.target.closest('.tier-item');
+  if (itemEl && !itemEl.classList.contains('dragging')) {
+    openItemContext(itemEl.dataset.id);
+  }
+});
+
+// ── PINCH ZOOM ──
+let zoomScale = 1;
+let lastPinchDist = 0;
+
+function applyZoom() {
+  const c = $('tierContainer');
+  c.style.transform = `scale(${zoomScale})`;
+  c.style.width = (100 / zoomScale) + '%';
+  const zoomed = zoomScale > 1.05;
+  $('zoomReset').classList.toggle('visible', zoomed);
+  c.classList.toggle('zoomed', zoomed);
+}
+
+function pinchDist(touches) {
+  const dx = touches[0].clientX - touches[1].clientX;
+  const dy = touches[0].clientY - touches[1].clientY;
+  return Math.sqrt(dx * dx + dy * dy);
+}
+
+$('tierWrapper').addEventListener('touchstart', e => {
+  if (e.touches.length === 2) { e.preventDefault(); lastPinchDist = pinchDist(e.touches); }
+}, { passive: false });
+
+$('tierWrapper').addEventListener('touchmove', e => {
+  if (e.touches.length === 2) {
+    e.preventDefault();
+    const d = pinchDist(e.touches);
+    zoomScale = Math.max(0.5, Math.min(3, zoomScale * (d / lastPinchDist)));
+    lastPinchDist = d;
+    applyZoom();
+  }
+}, { passive: false });
+
+$('zoomReset').addEventListener('click', () => { zoomScale = 1; applyZoom(); });
+
+// ── EXPORT ──
+$('exportBtn').addEventListener('click', exportImage);
+
+async function exportImage() {
+  const list = getList();
+  if (!list) return;
+  toast('Esportazione...');
+  const canvas = $('exportCanvas');
+  const ctx = canvas.getContext('2d');
+  const W = 800, ROW_H = 80, LW = 60, IS = 64, P = 8, HH = 50;
+  canvas.width = W; canvas.height = HH + TIERS.length * ROW_H + 20;
+  ctx.fillStyle = '#0a0a0f'; ctx.fillRect(0, 0, W, canvas.height);
+  ctx.fillStyle = '#e8e8f0'; ctx.font = 'bold 22px sans-serif'; ctx.fillText(list.name, 16, 34);
+  let y = HH;
+  for (const tier of TIERS) {
+    ctx.fillStyle = TIER_COLORS[tier]; ctx.fillRect(0, y, LW, ROW_H);
+    ctx.fillStyle = '#000'; ctx.font = 'bold 28px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(tier, LW / 2, y + ROW_H / 2);
+    ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
+    ctx.fillStyle = '#14141f'; ctx.fillRect(LW, y, W - LW, ROW_H);
+    const items = (list.tiers[tier] || []).map(id => list.items.find(i => i.id === id)).filter(Boolean);
+    let x = LW + P;
+    for (const item of items) {
+      if (item.img) { try { const img = await loadImg(item.img); ctx.drawImage(img, x, y + P, IS, IS); } catch(_) { ctx.fillStyle = '#282840'; ctx.fillRect(x, y + P, IS, IS); } }
+      else { ctx.fillStyle = '#282840'; ctx.fillRect(x, y + P, IS, IS); }
+      ctx.fillStyle = 'rgba(0,0,0,0.7)'; ctx.fillRect(x, y + P + IS - 16, IS, 16);
+      ctx.fillStyle = '#fff'; ctx.font = '9px sans-serif';
+      ctx.fillText(item.name.length > 10 ? item.name.slice(0,9) + '…' : item.name, x + 3, y + P + IS - 4);
+      x += IS + 6;
     }
     y += ROW_H;
   }
   canvas.toBlob(blob => {
-    const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    a.href = url;
+    a.href = URL.createObjectURL(blob);
     a.download = `tierlist-${list.name.replace(/\s+/g,'-')}.png`;
-    a.click();
-    URL.revokeObjectURL(url);
-    toast('Immagine scaricata!');
+    a.click(); toast('Immagine scaricata!');
   });
 }
 
-function loadImg(src) {
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    img.onload = () => resolve(img);
-    img.onerror = reject;
-    img.src = src;
-  });
-}
+function loadImg(src) { return new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = src; }); }
 
+// ── INIT ──
 renderHome();
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('sw.js').catch(() => {});
-}
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+
+
 </script>
 </body>
 </html>
