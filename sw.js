@@ -1,4 +1,4 @@
-const CACHE = 'tierlist-v8';
+const CACHE = 'tierlist-v9';
 const ASSETS = ['./', 'index.html', 'manifest.json'];
 
 self.addEventListener('install', e => {
