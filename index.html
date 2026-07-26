@@ -210,6 +210,12 @@ input:focus,select:focus{border-color:var(--accent)}
         </div>
       </div>
     </div>
+    <div class="modal-field">
+      <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:14px;color:var(--text)">
+        <input type="checkbox" id="itemShowName" style="accent-color:var(--accent);width:18px;height:18px">
+        Mostra nome sull'anteprima
+      </label>
+    </div>
     <div class="modal-actions">
       <button class="btn btn-secondary" onclick="closeModal('addItemModal')">Annulla</button>
       <button class="btn btn-primary" id="saveItemBtn">Aggiungi</button>
@@ -415,7 +421,7 @@ function createItemEl(item) {
   el.innerHTML = `
     <div class="item-inner" style="width:100%;height:100%;border-radius:6px;overflow:hidden;position:relative">
       ${item.img ? `<img src="${item.img}" alt="${esc(item.name)}" style="object-fit:${fit}">` : ''}
-      <div class="item-name">${esc(item.name)}</div>
+      ${item.showName ? `<div class="item-name">${esc(item.name)}</div>` : ''}
     </div>
   `;
   el.addEventListener('click', (e) => {
@@ -481,6 +487,7 @@ function openEditItem(id) {
   document.getElementById('itemName').value = item.name;
   document.getElementById('itemImage').value = '';
   document.getElementById('saveItemBtn').textContent = 'Salva';
+  document.getElementById('itemShowName').checked = !!item.showName;
   const container = document.getElementById('imgPreviewContainer');
   const preview = document.getElementById('imgPreview');
   if (item.img) {
@@ -629,6 +636,7 @@ document.getElementById('addItemBtn').addEventListener('click', () => {
   document.getElementById('itemName').value = '';
   document.getElementById('itemImage').value = '';
   document.getElementById('saveItemBtn').textContent = 'Aggiungi';
+  document.getElementById('itemShowName').checked = false;
   document.getElementById('imgPreview').innerHTML = '';
   document.getElementById('imgPreviewContainer').classList.remove('visible');
   document.querySelector('input[name="imgFit"][value="cover"]').checked = true;
@@ -667,6 +675,7 @@ document.getElementById('saveItemBtn').addEventListener('click', () => {
   if (!name) return;
   const list = getList();
   const fit = document.querySelector('input[name="imgFit"]:checked').value;
+  const showName = document.getElementById('itemShowName').checked;
   const file = document.getElementById('itemImage').files[0];
 
   const finishSave = (imgData) => {
@@ -675,6 +684,7 @@ document.getElementById('saveItemBtn').addEventListener('click', () => {
       if (item) {
         item.name = name;
         item.fit = fit;
+        item.showName = showName;
         if (imgData !== undefined) item.img = imgData;
       }
       save();
@@ -682,7 +692,7 @@ document.getElementById('saveItemBtn').addEventListener('click', () => {
       renderTiers();
       toast('Elemento modificato!');
     } else {
-      const item = { id: genId(), name, img: imgData || '', fit };
+      const item = { id: genId(), name, img: imgData || '', fit, showName };
       list.items.push(item);
       if (!list.tiers.unranked) list.tiers.unranked = [];
       list.tiers.unranked.push(item.id);
