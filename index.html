@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="TierList">
+<meta name="theme-color" content="#0a0a0f">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%230a0a0f' width='100' height='100' rx='20'/><text x='50' y='68' text-anchor='middle' font-size='50' font-weight='bold' fill='%2300e5ff'>T</text></svg>">
+<title>TierList</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0a0a0f;--surface:#14141f;--surface2:#1e1e2e;--surface3:#282840;
+  --text:#e8e8f0;--text2:#8888a0;--accent:#00e5ff;--accent2:#7c4dff;
+  --s:#ff1744;--a:#ff9100;--b:#ffea00;--c:#69f0ae;--d:#448aff;
+  --radius:12px;--shadow:0 4px 24px rgba(0,0,0,.4);
+}
+html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;-webkit-tap-highlight-color:transparent}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+input{font-family:inherit;color:var(--text);background:var(--surface2);border:1px solid var(--surface3);border-radius:8px;padding:8px 12px;outline:none}
+input:focus{border-color:var(--accent)}
+
+/* ── HEADER ── */
+.app-header{position:sticky;top:0;z-index:100;background:var(--surface);backdrop-filter:blur(20px);border-bottom:1px solid var(--surface3);padding:12px 16px;display:flex;align-items:center;gap:12px}
+.app-header h1{font-size:20px;font-weight:700;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;flex-shrink:0}
+.header-actions{margin-left:auto;display:flex;gap:8px}
+.btn{padding:8px 16px;border-radius:8px;font-size:14px;font-weight:600;transition:all .2s}
+.btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#000}
+.btn-primary:hover{opacity:.9;transform:translateY(-1px)}
+.btn-secondary{background:var(--surface2);border:1px solid var(--surface3)}
+.btn-secondary:hover{border-color:var(--accent)}
+.btn-icon{width:40px;height:40px;display:flex;align-items:center;justify-content:center;border-radius:10px;font-size:20px;background:var(--surface2);border:1px solid var(--surface3)}
+.btn-icon:hover{border-color:var(--accent);background:var(--surface3)}
+.btn-danger{background:#ff174422;color:var(--s);border:1px solid #ff174444}
+.btn-danger:hover{background:#ff174444}
+
+/* ── HOME / LIST CARDS ── */
+.home{padding:16px;max-width:800px;margin:0 auto}
+.home-title{font-size:28px;font-weight:800;margin:20px 0 8px;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.home-subtitle{color:var(--text2);margin-bottom:24px;font-size:14px}
+.list-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+.list-card{background:var(--surface);border:1px solid var(--surface3);border-radius:var(--radius);padding:20px;cursor:pointer;transition:all .25s;position:relative;overflow:hidden}
+.list-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--accent2));opacity:0;transition:opacity .25s}
+.list-card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:var(--shadow)}
+.list-card:hover::before{opacity:1}
+.list-card-name{font-size:16px;font-weight:700;margin-bottom:4px}
+.list-card-count{font-size:13px;color:var(--text2)}
+.list-card-actions{position:absolute;top:8px;right:8px;display:flex;gap:4px;opacity:0;transition:opacity .2s}
+.list-card:hover .list-card-actions{opacity:1}
+.list-card-actions button{width:28px;height:28px;border-radius:6px;font-size:14px;display:flex;align-items:center;justify-content:center;background:var(--surface2)}
+.add-card{border:2px dashed var(--surface3);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:var(--text2);min-height:100px}
+.add-card:hover{border-color:var(--accent);color:var(--accent)}
+.add-card .plus{font-size:32px;font-weight:300;line-height:1}
+
+/* ── TIER VIEW ── */
+.tier-view{display:none;flex-direction:column;height:100%}
+.tier-view.active{display:flex}
+.tier-header{padding:12px 16px;background:var(--surface);border-bottom:1px solid var(--surface3);display:flex;align-items:center;gap:12px}
+.tier-header .back{font-size:24px}
+.tier-title{font-size:18px;font-weight:700;flex:1}
+.tier-title-input{font-size:18px;font-weight:700;background:transparent;border:none;padding:4px 0;width:100%;color:var(--text)}
+.tier-title-input:focus{border-bottom:2px solid var(--accent)}
+
+.tier-container{flex:1;overflow-y:auto;padding:12px;-webkit-overflow-scrolling:touch}
+.tier-row{display:flex;margin-bottom:8px;border-radius:var(--radius);overflow:hidden;background:var(--surface);min-height:80px}
+.tier-label{width:60px;min-width:60px;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:900;color:#000;flex-shrink:0;user-select:none}
+.tier-label[data-tier="S"]{background:var(--s)}
+.tier-label[data-tier="A"]{background:var(--a)}
+.tier-label[data-tier="B"]{background:var(--b)}
+.tier-label[data-tier="C"]{background:var(--c)}
+.tier-label[data-tier="D"]{background:var(--d)}
+.tier-items{flex:1;display:flex;flex-wrap:wrap;align-content:flex-start;gap:6px;padding:8px;min-height:80px;transition:background .2s}
+.tier-items.drag-over{background:rgba(0,229,255,.08);outline:2px dashed var(--accent);outline-offset:-2px;border-radius:0 var(--radius) var(--radius) 0}
+
+/* ── UNRANKED AREA ── */
+.unranked{background:var(--surface);border-radius:var(--radius);margin-top:8px;padding:12px}
+.unranked-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.unranked-title{font-size:14px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:1px}
+.unranked-items{display:flex;flex-wrap:wrap;gap:6px;min-height:60px;padding:4px;border-radius:8px;transition:background .2s}
+.unranked-items.drag-over{background:rgba(0,229,255,.08);outline:2px dashed var(--accent)}
+
+/* ── ITEM ── */
+.tier-item{width:64px;height:64px;border-radius:8px;overflow:hidden;position:relative;cursor:grab;user-select:none;background:var(--surface2);border:2px solid transparent;transition:all .15s;flex-shrink:0}
+.tier-item:hover{border-color:var(--accent)}
+.tier-item.dragging{opacity:.4;transform:scale(.9)}
+.tier-item img{width:100%;height:100%;object-fit:cover;pointer-events:none}
+.tier-item .item-name{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,.85));color:#fff;font-size:9px;padding:2px 3px;text-align:center;line-height:1.2;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;pointer-events:none}
+.tier-item .item-delete{position:absolute;top:-6px;right:-6px;width:20px;height:20px;background:var(--s);color:#fff;border-radius:50%;font-size:12px;display:none;align-items:center;justify-content:center;z-index:5;line-height:1}
+.tier-item:hover .item-delete{display:flex}
+.tier-item-placeholder{width:64px;height:64px;border-radius:8px;border:2px dashed var(--accent);background:rgba(0,229,255,.05)}
+
+/* ── MODALS ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .25s}
+.modal-overlay.active{opacity:1;pointer-events:auto}
+.modal{background:var(--surface);border:1px solid var(--surface3);border-radius:16px;padding:24px;width:100%;max-width:400px;box-shadow:0 20px 60px rgba(0,0,0,.5);transform:translateY(20px);transition:transform .25s}
+.modal-overlay.active .modal{transform:translateY(0)}
+.modal h2{font-size:20px;margin-bottom:16px}
+.modal-field{margin-bottom:16px}
+.modal-field label{display:block;font-size:13px;color:var(--text2);margin-bottom:6px}
+.modal-field input{width:100%}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:20px}
+
+.img-preview{width:80px;height:80px;border-radius:10px;object-fit:cover;margin-top:8px;display:none;border:2px solid var(--surface3)}
+.file-label{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;background:var(--surface2);border:1px solid var(--surface3);border-radius:8px;cursor:pointer;font-size:14px;transition:all .2s}
+.file-label:hover{border-color:var(--accent)}
+
+/* ── EXPORT ── */
+.export-canvas{position:fixed;top:-9999px;left:-9999px}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--surface2);border:1px solid var(--surface3);padding:10px 20px;border-radius:10px;font-size:14px;z-index:300;transition:transform .3s;pointer-events:none}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+/* ── DRAG GHOST ── */
+.drag-ghost{position:fixed;z-index:999;pointer-events:none;width:64px;height:64px;border-radius:8px;overflow:hidden;box-shadow:0 8px 32px rgba(0,229,255,.3);border:2px solid var(--accent);transform:translate(-50%,-50%);transition:none}
+.drag-ghost img{width:100%;height:100%;object-fit:cover}
+
+@media(max-width:500px){
+  .list-grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+  .tier-label{width:44px;min-width:44px;font-size:18px}
+  .tier-item{width:52px;height:52px}
+  .tier-item .item-name{font-size:8px}
+  .tier-item-placeholder{width:52px;height:52px}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ HOME SCREEN ═══ -->
+<div id="homeScreen">
+  <div class="app-header">
+    <h1>TierList</h1>
+  </div>
+  <div class="home">
+    <div class="home-title">Le tue Tier List</div>
+    <div class="home-subtitle">Crea e organizza le tue classifiche</div>
+    <div class="list-grid" id="listGrid"></div>
+  </div>
+</div>
+
+<!-- ═══ TIER VIEW ═══ -->
+<div class="tier-view" id="tierView">
+  <div class="tier-header">
+    <button class="btn-icon back" id="backBtn">←</button>
+    <input class="tier-title-input" id="tierTitleInput" placeholder="Nome tier list...">
+    <button class="btn btn-secondary" id="exportBtn">📸</button>
+    <button class="btn btn-primary" id="addItemBtn">+ Aggiungi</button>
+  </div>
+  <div class="tier-container" id="tierContainer">
+    <div id="tierRows"></div>
+    <div class="unranked" id="unrankedArea">
+      <div class="unranked-header">
+        <span class="unranked-title">Non classificati</span>
+      </div>
+      <div class="unranked-items" id="unrankedItems" data-tier="unranked"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ MODAL: New List ═══ -->
+<div class="modal-overlay" id="newListModal">
+  <div class="modal">
+    <h2>Nuova Tier List</h2>
+    <div class="modal-field">
+      <label>Nome</label>
+      <input id="newListName" placeholder="es. Videogiochi, Anime, Film...">
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeModal('newListModal')">Annulla</button>
+      <button class="btn btn-primary" id="createListBtn">Crea</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ MODAL: Add Item ═══ -->
+<div class="modal-overlay" id="addItemModal">
+  <div class="modal">
+    <h2>Aggiungi Elemento</h2>
+    <div class="modal-field">
+      <label>Nome</label>
+      <input id="itemName" placeholder="es. Dark Souls, Naruto...">
+    </div>
+    <div class="modal-field">
+      <label>Immagine</label>
+      <label class="file-label">
+        📁 Scegli immagine
+        <input type="file" id="itemImage" accept="image/*" hidden>
+      </label>
+      <img class="img-preview" id="imgPreview">
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeModal('addItemModal')">Annulla</button>
+      <button class="btn btn-primary" id="saveItemBtn">Aggiungi</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ MODAL: Rename List ═══ -->
+<div class="modal-overlay" id="renameModal">
+  <div class="modal">
+    <h2>Rinomina Tier List</h2>
+    <div class="modal-field">
+      <label>Nuovo nome</label>
+      <input id="renameInput">
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeModal('renameModal')">Annulla</button>
+      <button class="btn btn-primary" id="renameConfirmBtn">Salva</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<canvas class="export-canvas" id="exportCanvas"></canvas>
+
+<script>
+// ═══════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════
+const TIERS = ['S','A','B','C','D'];
+const TIER_COLORS = {S:'#ff1744',A:'#ff9100',B:'#ffea00',C:'#69f0ae',D:'#448aff'};
+let data = JSON.parse(localStorage.getItem('tierlist_data') || '{"lists":[]}');
+let currentListId = null;
+let dragItem = null;
+let dragGhost = null;
+let touchStartX = 0, touchStartY = 0;
+
+function save() { localStorage.setItem('tierlist_data', JSON.stringify(data)); }
+function genId() { return Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
+function getList() { return data.lists.find(l => l.id === currentListId); }
+
+// ═══════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+// ═══════════════════════════════════════
+// MODALS
+// ═══════════════════════════════════════
+function openModal(id) { document.getElementById(id).classList.add('active'); }
+function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+
+// ═══════════════════════════════════════
+// HOME SCREEN
+// ═══════════════════════════════════════
+function renderHome() {
+  const grid = document.getElementById('listGrid');
+  grid.innerHTML = '';
+  data.lists.forEach(list => {
+    const count = list.items ? list.items.length : 0;
+    const card = document.createElement('div');
+    card.className = 'list-card';
+    card.innerHTML = `
+      <div class="list-card-actions">
+        <button class="rename-btn" data-id="${list.id}" title="Rinomina">✏️</button>
+        <button class="delete-list-btn" data-id="${list.id}" title="Elimina">🗑️</button>
+      </div>
+      <div class="list-card-name">${esc(list.name)}</div>
+      <div class="list-card-count">${count} element${count !== 1 ? 'i' : 'o'}</div>
+    `;
+    card.addEventListener('click', (e) => {
+      if (e.target.closest('.rename-btn') || e.target.closest('.delete-list-btn')) return;
+      openList(list.id);
+    });
+    card.querySelector('.rename-btn').addEventListener('click', () => startRename(list.id));
+    card.querySelector('.delete-list-btn').addEventListener('click', () => deleteList(list.id));
+    grid.appendChild(card);
+  });
+  const add = document.createElement('div');
+  add.className = 'list-card add-card';
+  add.innerHTML = '<span class="plus">+</span><span>Nuova Lista</span>';
+  add.addEventListener('click', () => {
+    document.getElementById('newListName').value = '';
+    openModal('newListModal');
+    setTimeout(() => document.getElementById('newListName').focus(), 100);
+  });
+  grid.appendChild(add);
+}
+
+function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+
+// ═══════════════════════════════════════
+// LIST CRUD
+// ═══════════════════════════════════════
+document.getElementById('createListBtn').addEventListener('click', () => {
+  const name = document.getElementById('newListName').value.trim();
+  if (!name) return;
+  const list = { id: genId(), name, items: [], tiers: { S:[], A:[], B:[], C:[], D:[], unranked:[] } };
+  data.lists.push(list);
+  save();
+  closeModal('newListModal');
+  renderHome();
+  toast('Lista creata!');
+});
+
+document.getElementById('newListName').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('createListBtn').click();
+});
+
+function deleteList(id) {
+  if (!confirm('Eliminare questa tier list?')) return;
+  data.lists = data.lists.filter(l => l.id !== id);
+  save();
+  renderHome();
+  toast('Lista eliminata');
+}
+
+let renameListId = null;
+function startRename(id) {
+  renameListId = id;
+  const list = data.lists.find(l => l.id === id);
+  document.getElementById('renameInput').value = list.name;
+  openModal('renameModal');
+  setTimeout(() => document.getElementById('renameInput').focus(), 100);
+}
+document.getElementById('renameConfirmBtn').addEventListener('click', () => {
+  const name = document.getElementById('renameInput').value.trim();
+  if (!name) return;
+  const list = data.lists.find(l => l.id === renameListId);
+  if (list) { list.name = name; save(); renderHome(); }
+  closeModal('renameModal');
+});
+document.getElementById('renameInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('renameConfirmBtn').click();
+});
+
+// ═══════════════════════════════════════
+// TIER VIEW
+// ═══════════════════════════════════════
+function openList(id) {
+  currentListId = id;
+  const list = getList();
+  if (!list.tiers) list.tiers = { S:[], A:[], B:[], C:[], D:[], unranked:[] };
+  document.getElementById('tierTitleInput').value = list.name;
+  document.getElementById('homeScreen').style.display = 'none';
+  document.getElementById('tierView').classList.add('active');
+  renderTiers();
+}
+
+document.getElementById('backBtn').addEventListener('click', () => {
+  document.getElementById('tierView').classList.remove('active');
+  document.getElementById('homeScreen').style.display = '';
+  currentListId = null;
+  renderHome();
+});
+
+document.getElementById('tierTitleInput').addEventListener('input', () => {
+  const list = getList();
+  if (list) { list.name = document.getElementById('tierTitleInput').value; save(); }
+});
+
+function renderTiers() {
+  const list = getList();
+  if (!list) return;
+  const rows = document.getElementById('tierRows');
+  rows.innerHTML = '';
+  TIERS.forEach(tier => {
+    const row = document.createElement('div');
+    row.className = 'tier-row';
+    row.innerHTML = `<div class="tier-label" data-tier="${tier}">${tier}</div>`;
+    const items = document.createElement('div');
+    items.className = 'tier-items';
+    items.dataset.tier = tier;
+    (list.tiers[tier] || []).forEach(itemId => {
+      const item = list.items.find(i => i.id === itemId);
+      if (item) items.appendChild(createItemEl(item));
+    });
+    setupDropZone(items);
+    row.appendChild(items);
+    rows.appendChild(row);
+  });
+  const unranked = document.getElementById('unrankedItems');
+  unranked.innerHTML = '';
+  (list.tiers.unranked || []).forEach(itemId => {
+    const item = list.items.find(i => i.id === itemId);
+    if (item) unranked.appendChild(createItemEl(item));
+  });
+  setupDropZone(unranked);
+}
+
+function createItemEl(item) {
+  const el = document.createElement('div');
+  el.className = 'tier-item';
+  el.dataset.id = item.id;
+  el.draggable = true;
+  el.innerHTML = `
+    ${item.img ? `<img src="${item.img}" alt="${esc(item.name)}">` : ''}
+    <div class="item-name">${esc(item.name)}</div>
+    <button class="item-delete" title="Elimina">×</button>
+  `;
+  el.querySelector('.item-delete').addEventListener('click', (e) => {
+    e.stopPropagation();
+    deleteItem(item.id);
+  });
+  // Desktop drag
+  el.addEventListener('dragstart', (e) => {
+    dragItem = item.id;
+    el.classList.add('dragging');
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', item.id);
+  });
+  el.addEventListener('dragend', () => {
+    el.classList.remove('dragging');
+    dragItem = null;
+    clearPlaceholders();
+  });
+  // Touch drag
+  el.addEventListener('touchstart', handleTouchStart, { passive: false });
+  el.addEventListener('touchmove', handleTouchMove, { passive: false });
+  el.addEventListener('touchend', handleTouchEnd);
+  return el;
+}
+
+// ═══════════════════════════════════════
+// DRAG & DROP (Desktop)
+// ═══════════════════════════════════════
+function setupDropZone(zone) {
+  zone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    zone.classList.add('drag-over');
+  });
+  zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
+  zone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    zone.classList.remove('drag-over');
+    const itemId = e.dataTransfer.getData('text/plain');
+    if (itemId) moveItem(itemId, zone.dataset.tier);
+  });
+}
+
+function moveItem(itemId, toTier) {
+  const list = getList();
+  if (!list) return;
+  Object.keys(list.tiers).forEach(t => {
+    list.tiers[t] = list.tiers[t].filter(id => id !== itemId);
+  });
+  if (!list.tiers[toTier]) list.tiers[toTier] = [];
+  list.tiers[toTier].push(itemId);
+  save();
+  renderTiers();
+}
+
+function clearPlaceholders() {
+  document.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
+}
+
+// ═══════════════════════════════════════
+// TOUCH DRAG (Mobile)
+// ═══════════════════════════════════════
+function handleTouchStart(e) {
+  const el = e.currentTarget;
+  const touch = e.touches[0];
+  touchStartX = touch.clientX;
+  touchStartY = touch.clientY;
+  dragItem = el.dataset.id;
+  el._touchTimeout = setTimeout(() => {
+    el.classList.add('dragging');
+    createGhost(el, touch.clientX, touch.clientY);
+  }, 150);
+}
+
+function handleTouchMove(e) {
+  const el = e.currentTarget;
+  const touch = e.touches[0];
+  const dx = Math.abs(touch.clientX - touchStartX);
+  const dy = Math.abs(touch.clientY - touchStartY);
+  if (dx < 5 && dy < 5) return;
+  e.preventDefault();
+  if (!el.classList.contains('dragging')) {
+    clearTimeout(el._touchTimeout);
+    el.classList.add('dragging');
+    createGhost(el, touch.clientX, touch.clientY);
+  }
+  if (dragGhost) {
+    dragGhost.style.left = touch.clientX + 'px';
+    dragGhost.style.top = touch.clientY + 'px';
+  }
+  highlightDropZone(touch.clientX, touch.clientY);
+}
+
+function handleTouchEnd(e) {
+  const el = e.currentTarget;
+  clearTimeout(el._touchTimeout);
+  el.classList.remove('dragging');
+  removeGhost();
+  if (dragItem) {
+    const touch = e.changedTouches[0];
+    const zone = getDropZone(touch.clientX, touch.clientY);
+    if (zone) moveItem(dragItem, zone.dataset.tier);
+  }
+  dragItem = null;
+  clearPlaceholders();
+}
+
+function createGhost(el, x, y) {
+  removeGhost();
+  dragGhost = document.createElement('div');
+  dragGhost.className = 'drag-ghost';
+  const img = el.querySelector('img');
+  if (img) dragGhost.innerHTML = `<img src="${img.src}">`;
+  else dragGhost.style.background = 'var(--surface3)';
+  dragGhost.style.left = x + 'px';
+  dragGhost.style.top = y + 'px';
+  document.body.appendChild(dragGhost);
+}
+
+function removeGhost() {
+  if (dragGhost) { dragGhost.remove(); dragGhost = null; }
+}
+
+function getDropZone(x, y) {
+  const zones = document.querySelectorAll('.tier-items, .unranked-items');
+  for (const z of zones) {
+    const r = z.getBoundingClientRect();
+    if (x >= r.left && x <= r.right && y >= r.top && y <= r.bottom) return z;
+  }
+  return null;
+}
+
+function highlightDropZone(x, y) {
+  clearPlaceholders();
+  const zone = getDropZone(x, y);
+  if (zone) zone.classList.add('drag-over');
+}
+
+// ═══════════════════════════════════════
+// ADD / DELETE ITEMS
+// ═══════════════════════════════════════
+document.getElementById('addItemBtn').addEventListener('click', () => {
+  document.getElementById('itemName').value = '';
+  document.getElementById('itemImage').value = '';
+  document.getElementById('imgPreview').style.display = 'none';
+  openModal('addItemModal');
+  setTimeout(() => document.getElementById('itemName').focus(), 100);
+});
+
+document.getElementById('itemImage').addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const preview = document.getElementById('imgPreview');
+  const reader = new FileReader();
+  reader.onload = () => { preview.src = reader.result; preview.style.display = 'block'; };
+  reader.readAsDataURL(file);
+});
+
+document.getElementById('saveItemBtn').addEventListener('click', () => {
+  const name = document.getElementById('itemName').value.trim();
+  if (!name) return;
+  const list = getList();
+  const file = document.getElementById('itemImage').files[0];
+  const addItem = (imgData) => {
+    const item = { id: genId(), name, img: imgData || '' };
+    list.items.push(item);
+    if (!list.tiers.unranked) list.tiers.unranked = [];
+    list.tiers.unranked.push(item.id);
+    save();
+    closeModal('addItemModal');
+    renderTiers();
+    toast('Elemento aggiunto!');
+  };
+  if (file) {
+    compressImage(file, (dataUrl) => addItem(dataUrl));
+  } else {
+    addItem('');
+  }
+});
+
+document.getElementById('itemName').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('saveItemBtn').click();
+});
+
+function compressImage(file, cb) {
+  const img = new Image();
+  img.onload = () => {
+    const canvas = document.createElement('canvas');
+    const MAX = 200;
+    let w = img.width, h = img.height;
+    if (w > h) { h = h * MAX / w; w = MAX; }
+    else { w = w * MAX / h; h = MAX; }
+    canvas.width = w;
+    canvas.height = h;
+    canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+    cb(canvas.toDataURL('image/jpeg', 0.7));
+  };
+  img.src = URL.createObjectURL(file);
+}
+
+function deleteItem(id) {
+  const list = getList();
+  list.items = list.items.filter(i => i.id !== id);
+  Object.keys(list.tiers).forEach(t => {
+    list.tiers[t] = list.tiers[t].filter(i => i !== id);
+  });
+  save();
+  renderTiers();
+  toast('Elemento rimosso');
+}
+
+// ═══════════════════════════════════════
+// EXPORT AS IMAGE
+// ═══════════════════════════════════════
+document.getElementById('exportBtn').addEventListener('click', exportAsImage);
+
+async function exportAsImage() {
+  const list = getList();
+  if (!list) return;
+  toast('Esportazione in corso...');
+  const canvas = document.getElementById('exportCanvas');
+  const ctx = canvas.getContext('2d');
+  const W = 800;
+  const ROW_H = 80;
+  const LABEL_W = 60;
+  const ITEM_SIZE = 64;
+  const PAD = 8;
+  const HEADER_H = 50;
+  const H = HEADER_H + TIERS.length * ROW_H + 20;
+  canvas.width = W;
+  canvas.height = H;
+
+  ctx.fillStyle = '#0a0a0f';
+  ctx.fillRect(0, 0, W, H);
+
+  ctx.fillStyle = '#e8e8f0';
+  ctx.font = 'bold 22px -apple-system, sans-serif';
+  ctx.fillText(list.name, 16, 34);
+
+  let y = HEADER_H;
+  for (const tier of TIERS) {
+    ctx.fillStyle = TIER_COLORS[tier];
+    ctx.fillRect(0, y, LABEL_W, ROW_H);
+    ctx.fillStyle = '#000';
+    ctx.font = 'bold 28px -apple-system, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(tier, LABEL_W / 2, y + ROW_H / 2);
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'alphabetic';
+
+    ctx.fillStyle = '#14141f';
+    ctx.fillRect(LABEL_W, y, W - LABEL_W, ROW_H);
+
+    const items = (list.tiers[tier] || []).map(id => list.items.find(i => i.id === id)).filter(Boolean);
+    let x = LABEL_W + PAD;
+    for (const item of items) {
+      if (item.img) {
+        try {
+          const img = await loadImg(item.img);
+          ctx.drawImage(img, x, y + PAD, ITEM_SIZE, ITEM_SIZE);
+        } catch(_) {
+          ctx.fillStyle = '#282840';
+          ctx.fillRect(x, y + PAD, ITEM_SIZE, ITEM_SIZE);
+        }
+      } else {
+        ctx.fillStyle = '#282840';
+        ctx.fillRect(x, y + PAD, ITEM_SIZE, ITEM_SIZE);
+      }
+      ctx.fillStyle = 'rgba(0,0,0,0.7)';
+      ctx.fillRect(x, y + PAD + ITEM_SIZE - 16, ITEM_SIZE, 16);
+      ctx.fillStyle = '#fff';
+      ctx.font = '9px -apple-system, sans-serif';
+      const label = item.name.length > 10 ? item.name.slice(0,9) + '…' : item.name;
+      ctx.fillText(label, x + 3, y + PAD + ITEM_SIZE - 4);
+      x += ITEM_SIZE + 6;
+    }
+    y += ROW_H;
+  }
+
+  canvas.toBlob(blob => {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `tierlist-${list.name.replace(/\s+/g,'-')}.png`;
+    a.click();
+    URL.revokeObjectURL(url);
+    toast('Immagine scaricata!');
+  });
+}
+
+function loadImg(src) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => resolve(img);
+    img.onerror = reject;
+    img.src = src;
+  });
+}
+
+// ═══════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════
+renderHome();
+
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').catch(() => {});
+}
+</script>
+</body>
+</html>
