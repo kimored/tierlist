@@ -91,8 +91,11 @@ input:focus,select:focus{border-color:var(--accent)}
 .item-context-sheet{background:var(--surface);border:1px solid var(--surface3);border-radius:16px 16px 0 0;padding:20px;width:100%;max-width:400px;transform:translateY(100%);transition:transform .25s}
 .item-context-overlay.active .item-context-sheet{transform:translateY(0)}
 .item-context-header{display:flex;align-items:center;gap:12px;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--surface3)}
-.item-context-thumb{width:48px;height:48px;border-radius:8px;overflow:hidden;background:var(--surface2);flex-shrink:0}
+.item-context-thumb{width:48px;height:48px;border-radius:8px;overflow:hidden;background:var(--surface2);flex-shrink:0;cursor:pointer}
 .item-context-thumb img{width:100%;height:100%;object-fit:cover}
+.fullscreen-img{position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.95);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s;cursor:zoom-out}
+.fullscreen-img.active{opacity:1;pointer-events:auto}
+.fullscreen-img img{max-width:95%;max-height:95%;object-fit:contain;border-radius:8px}
 .item-context-name{font-size:16px;font-weight:700;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .item-context-actions{display:flex;flex-direction:column;gap:8px}
 .item-context-btn{display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:10px;font-size:15px;font-weight:500;transition:background .15s;width:100%;text-align:left}
@@ -252,6 +255,7 @@ input:focus,select:focus{border-color:var(--accent)}
   </div>
 </div>
 
+<div class="fullscreen-img" id="fullscreenImg"><img id="fullscreenImgSrc"></div>
 <div class="toast" id="toast"></div>
 <canvas class="export-canvas" id="exportCanvas"></canvas>
 
@@ -457,6 +461,11 @@ function openItemContext(id) {
   const thumb = document.getElementById('ctxThumb');
   thumb.innerHTML = item.img ? `<img src="${item.img}">` : '';
   document.getElementById('itemContextOverlay').classList.add('active');
+  const thumb = document.getElementById('ctxThumb');
+  thumb.onclick = item.img ? () => {
+    document.getElementById('fullscreenImgSrc').src = item.img;
+    document.getElementById('fullscreenImg').classList.add('active');
+  } : null;
 }
 function closeItemContext() {
   document.getElementById('itemContextOverlay').classList.remove('active');
@@ -464,6 +473,9 @@ function closeItemContext() {
 }
 document.getElementById('itemContextOverlay').addEventListener('click', (e) => {
   if (e.target === document.getElementById('itemContextOverlay')) closeItemContext();
+});
+document.getElementById('fullscreenImg').addEventListener('click', () => {
+  document.getElementById('fullscreenImg').classList.remove('active');
 });
 document.getElementById('ctxEditBtn').addEventListener('click', () => {
   const id = contextItemId;
