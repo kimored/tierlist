@@ -148,8 +148,8 @@ input:focus,select:focus{border-color:var(--accent)}
 .drag-ghost img{width:100%;height:100%;object-fit:cover}
 
 /* ── DRAG PLACEHOLDER ── */
-.drag-placeholder{width:64px;height:64px;border-radius:8px;border:2px dashed var(--accent);background:rgba(0,229,255,.08);flex-shrink:0;transition:width .15s,height .15s}
-.tier-item{transition:transform .15s ease}
+.drag-placeholder{width:64px;height:64px;border-radius:8px;border:2px dashed var(--accent);background:rgba(0,229,255,.08);flex-shrink:0}
+.tier-item{transition:transform .2s cubic-bezier(.2,.8,.32,1)}
 
 /* ── ZOOM ── */
 .tier-container-wrapper{flex:1;overflow:auto;-webkit-overflow-scrolling:touch;touch-action:pan-x pan-y}
@@ -526,11 +526,12 @@ function createItemEl(item) {
     </div>
   `;
   el.addEventListener('click', (e) => {
-    if (el.classList.contains('dragging')) return;
+    if (isZoomed || el.classList.contains('dragging')) return;
     e.stopPropagation();
     openItemContext(item.id);
   });
   el.addEventListener('dragstart', (e) => {
+    if (isZoomed) { e.preventDefault(); return; }
     dragItem = item.id;
     el.classList.add('dragging');
     e.dataTransfer.effectAllowed = 'move';
@@ -634,20 +635,13 @@ function removePlaceholder() {
   if (currentPlaceholder) { currentPlaceholder.remove(); currentPlaceholder = null; }
 }
 
-function showPlaceholder(zone, x) {
+function showPlaceholder(zone, x, y) {
   if (!zone) { removePlaceholder(); return; }
   if (!currentPlaceholder) currentPlaceholder = createPlaceholder();
+  const idx = getInsertIndexFromXY(zone, x, y);
   const items = [...zone.querySelectorAll('.tier-item:not(.dragging)')];
-  let inserted = false;
-  for (let i = 0; i < items.length; i++) {
-    const rect = items[i].getBoundingClientRect();
-    if (x < rect.left + rect.width / 2) {
-      zone.insertBefore(currentPlaceholder, items[i]);
-      inserted = true;
-      break;
-    }
-  }
-  if (!inserted) zone.appendChild(currentPlaceholder);
+  if (idx < items.length) zone.insertBefore(currentPlaceholder, items[idx]);
+  else zone.appendChild(currentPlaceholder);
 }
 
 function setupDropZone(zone) {
@@ -655,7 +649,7 @@ function setupDropZone(zone) {
     e.preventDefault();
     e.dataTransfer.dropEffect = 'move';
     zone.classList.add('drag-over');
-    showPlaceholder(zone, e.clientX);
+    showPlaceholder(zone, e.clientX, e.clientY);
   });
   zone.addEventListener('dragleave', (e) => {
     if (!zone.contains(e.relatedTarget)) {
@@ -684,13 +678,18 @@ function getPlaceholderIndex(zone) {
   return items.length;
 }
 
-function getInsertIndexFromXY(zone, x) {
+function getInsertIndexFromXY(zone, x, y) {
   const items = [...zone.querySelectorAll('.tier-item:not(.dragging)')];
+  if (!items.length) return 0;
+  let closest = 0, minDist = Infinity;
   for (let i = 0; i < items.length; i++) {
-    const rect = items[i].getBoundingClientRect();
-    if (x < rect.left + rect.width / 2) return i;
+    const r = items[i].getBoundingClientRect();
+    const cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+    const dist = Math.sqrt((x - cx) ** 2 + (y - cy) ** 2);
+    if (dist < minDist) { minDist = dist; closest = i; }
   }
-  return items.length;
+  const r = items[closest].getBoundingClientRect();
+  return x > r.left + r.width / 2 ? closest + 1 : closest;
 }
 
 function moveItem(itemId, toTier, insertIdx) {
@@ -718,6 +717,7 @@ let touchDragging = false;
 let touchMoved = false;
 
 function handleTouchStart(e) {
+  if (isZoomed) return;
   const el = e.currentTarget;
   const touch = e.touches[0];
   touchStartX = touch.clientX;
@@ -752,7 +752,7 @@ function handleTouchMove(e) {
   }
   const zone = getDropZone(touch.clientX, touch.clientY);
   highlightDropZone(touch.clientX, touch.clientY);
-  showPlaceholder(zone, touch.clientX);
+  showPlaceholder(zone, touch.clientX, touch.clientY);
 }
 
 function handleTouchEnd(e) {
@@ -770,7 +770,7 @@ function handleTouchEnd(e) {
     const touch = e.changedTouches[0];
     const zone = getDropZone(touch.clientX, touch.clientY);
     if (zone) {
-      const insertIdx = getInsertIndexFromXY(zone, touch.clientX);
+      const insertIdx = getInsertIndexFromXY(zone, touch.clientX, touch.clientY);
       moveItem(dragItem, zone.dataset.tier, insertIdx);
     }
   }
