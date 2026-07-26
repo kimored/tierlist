@@ -710,7 +710,7 @@ function moveItem(itemId, toTier, insertIdx) {
     list.tiers[toTier].push(itemId);
   }
   save();
-  renderTiers();
+  forceRender();
 }
 
 function clearHighlights() {
@@ -896,7 +896,7 @@ document.getElementById('saveItemBtn').addEventListener('click', () => {
       }
       save();
       closeModal('addItemModal');
-      renderTiers();
+      forceRender();
       toast('Elemento modificato!');
     } else {
       const item = { id: genId(), name, img: imgData || '', fit, showName };
@@ -905,7 +905,7 @@ document.getElementById('saveItemBtn').addEventListener('click', () => {
       list.tiers.unranked.push(item.id);
       save();
       closeModal('addItemModal');
-      renderTiers();
+      forceRender();
       toast('Elemento aggiunto!');
     }
     editingItemId = null;
@@ -929,7 +929,7 @@ function compressImage(file, cb) {
   const img = new Image();
   img.onload = () => {
     const canvas = document.createElement('canvas');
-    const MAX = 800;
+    const MAX = 1600;
     let w = img.width, h = img.height;
     if (w > MAX || h > MAX) {
       if (w > h) { h = h * MAX / w; w = MAX; }
@@ -937,8 +937,11 @@ function compressImage(file, cb) {
     }
     canvas.width = w;
     canvas.height = h;
-    canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-    cb(canvas.toDataURL('image/jpeg', 0.92));
+    const ctx = canvas.getContext('2d');
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
+    ctx.drawImage(img, 0, 0, w, h);
+    cb(canvas.toDataURL('image/webp', 0.93));
   };
   img.src = URL.createObjectURL(file);
 }
@@ -950,8 +953,18 @@ function deleteItem(id) {
     list.tiers[t] = list.tiers[t].filter(i => i !== id);
   });
   save();
-  renderTiers();
+  forceRender();
   toast('Elemento rimosso');
+}
+
+function forceRender() {
+  renderTiers();
+  requestAnimationFrame(() => {
+    const c = document.getElementById('tierContainer');
+    c.style.display = 'none';
+    c.offsetHeight;
+    c.style.display = '';
+  });
 }
 
 // ── EXPORT ──
