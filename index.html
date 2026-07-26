@@ -45,7 +45,11 @@ input:focus,select:focus{border-color:var(--accent)}
 .list-card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:var(--shadow)}
 .list-card:hover::before{opacity:1}
 .list-card-name{font-size:16px;font-weight:700;margin-bottom:4px;padding-right:60px}
-.list-card-count{font-size:13px;color:var(--text2)}
+.list-card-count{font-size:13px;color:var(--text2);margin-bottom:10px}
+.list-card-preview{display:flex;gap:4px;flex-wrap:wrap}
+.list-card-preview .preview-thumb{width:32px;height:32px;border-radius:6px;overflow:hidden;background:var(--surface2)}
+.list-card-preview .preview-thumb img{width:100%;height:100%;object-fit:cover}
+.list-card-preview .preview-more{width:32px;height:32px;border-radius:6px;background:var(--surface3);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--text2)}
 .list-card-actions{position:absolute;top:12px;right:12px;display:flex;gap:4px}
 .list-card-actions button{width:32px;height:32px;border-radius:8px;font-size:15px;display:flex;align-items:center;justify-content:center;background:var(--surface2);border:1px solid var(--surface3);transition:all .2s;opacity:.6}
 .list-card-actions button:hover{opacity:1;border-color:var(--accent)}
@@ -298,6 +302,29 @@ function genId() { return Date.now().toString(36) + Math.random().toString(36).s
 function getList() { return data.lists.find(l => l.id === currentListId); }
 function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
 
+function buildCardPreview(list) {
+  if (!list.tiers || !list.items || !list.items.length) return '';
+  const topItems = [];
+  for (const tier of ['S','A','B']) {
+    for (const id of (list.tiers[tier] || [])) {
+      const item = list.items.find(i => i.id === id);
+      if (item) topItems.push(item);
+    }
+  }
+  if (!topItems.length) return '';
+  const MAX = 5;
+  const shown = topItems.slice(0, MAX);
+  const remaining = topItems.length - MAX;
+  let html = shown.map(item =>
+    item.img ? `<div class="preview-thumb"><img src="${item.img}"></div>`
+             : `<div class="preview-thumb"></div>`
+  ).join('');
+  if (remaining > 0) {
+    html += `<div class="preview-more">+${remaining}</div>`;
+  }
+  return html;
+}
+
 // ── TOAST ──
 function toast(msg) {
   const t = document.getElementById('toast');
@@ -325,6 +352,7 @@ function renderHome() {
       </div>
       <div class="list-card-name">${esc(list.name)}</div>
       <div class="list-card-count">${count} element${count !== 1 ? 'i' : 'o'}</div>
+      <div class="list-card-preview">${buildCardPreview(list)}</div>
     `;
     card.addEventListener('click', (e) => {
       if (e.target.closest('.rename-btn') || e.target.closest('.delete-list-btn')) return;
