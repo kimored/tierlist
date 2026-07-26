@@ -530,16 +530,22 @@ function clearPlaceholders() {
 }
 
 // ── TOUCH DRAG ──
+let touchDragging = false;
+let touchMoved = false;
+
 function handleTouchStart(e) {
   const el = e.currentTarget;
   const touch = e.touches[0];
   touchStartX = touch.clientX;
   touchStartY = touch.clientY;
+  touchDragging = false;
+  touchMoved = false;
   dragItem = el.dataset.id;
   el._touchTimeout = setTimeout(() => {
+    touchDragging = true;
     el.classList.add('dragging');
     createGhostEl(el, touch.clientX, touch.clientY);
-  }, 150);
+  }, 300);
 }
 
 function handleTouchMove(e) {
@@ -547,10 +553,12 @@ function handleTouchMove(e) {
   const touch = e.touches[0];
   const dx = Math.abs(touch.clientX - touchStartX);
   const dy = Math.abs(touch.clientY - touchStartY);
-  if (dx < 5 && dy < 5) return;
+  if (dx < 8 && dy < 8) return;
+  touchMoved = true;
   e.preventDefault();
-  if (!el.classList.contains('dragging')) {
+  if (!touchDragging) {
     clearTimeout(el._touchTimeout);
+    touchDragging = true;
     el.classList.add('dragging');
     createGhostEl(el, touch.clientX, touch.clientY);
   }
@@ -564,14 +572,21 @@ function handleTouchMove(e) {
 function handleTouchEnd(e) {
   const el = e.currentTarget;
   clearTimeout(el._touchTimeout);
+  if (!touchMoved && !touchDragging) {
+    openItemContext(el.dataset.id);
+    dragItem = null;
+    return;
+  }
   el.classList.remove('dragging');
   removeGhost();
-  if (dragItem) {
+  if (touchDragging && dragItem) {
     const touch = e.changedTouches[0];
     const zone = getDropZone(touch.clientX, touch.clientY);
     if (zone) moveItem(dragItem, zone.dataset.tier);
   }
   dragItem = null;
+  touchDragging = false;
+  touchMoved = false;
   clearPlaceholders();
 }
 
