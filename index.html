@@ -527,18 +527,43 @@ function setupDropZone(zone) {
     e.preventDefault();
     zone.classList.remove('drag-over');
     const itemId = e.dataTransfer.getData('text/plain');
-    if (itemId) moveItem(itemId, zone.dataset.tier);
+    if (itemId) {
+      const insertIdx = getInsertIndex(zone, e.clientX);
+      moveItem(itemId, zone.dataset.tier, insertIdx);
+    }
   });
 }
 
-function moveItem(itemId, toTier) {
+function getInsertIndex(zone, x) {
+  const items = [...zone.querySelectorAll('.tier-item:not(.dragging)')];
+  for (let i = 0; i < items.length; i++) {
+    const rect = items[i].getBoundingClientRect();
+    if (x < rect.left + rect.width / 2) return i;
+  }
+  return items.length;
+}
+
+function getInsertIndexXY(zone, x, y) {
+  const items = [...zone.querySelectorAll('.tier-item:not(.dragging)')];
+  for (let i = 0; i < items.length; i++) {
+    const rect = items[i].getBoundingClientRect();
+    if (x < rect.left + rect.width / 2) return i;
+  }
+  return items.length;
+}
+
+function moveItem(itemId, toTier, insertIdx) {
   const list = getList();
   if (!list) return;
   Object.keys(list.tiers).forEach(t => {
     list.tiers[t] = list.tiers[t].filter(id => id !== itemId);
   });
   if (!list.tiers[toTier]) list.tiers[toTier] = [];
-  list.tiers[toTier].push(itemId);
+  if (insertIdx !== undefined && insertIdx < list.tiers[toTier].length) {
+    list.tiers[toTier].splice(insertIdx, 0, itemId);
+  } else {
+    list.tiers[toTier].push(itemId);
+  }
   save();
   renderTiers();
 }
@@ -600,7 +625,10 @@ function handleTouchEnd(e) {
   if (touchDragging && dragItem) {
     const touch = e.changedTouches[0];
     const zone = getDropZone(touch.clientX, touch.clientY);
-    if (zone) moveItem(dragItem, zone.dataset.tier);
+    if (zone) {
+      const insertIdx = getInsertIndexXY(zone, touch.clientX, touch.clientY);
+      moveItem(dragItem, zone.dataset.tier, insertIdx);
+    }
   }
   dragItem = null;
   touchDragging = false;
