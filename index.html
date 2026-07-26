@@ -460,12 +460,11 @@ function openItemContext(id) {
   document.getElementById('ctxName').textContent = item.name;
   const thumb = document.getElementById('ctxThumb');
   thumb.innerHTML = item.img ? `<img src="${item.img}">` : '';
-  document.getElementById('itemContextOverlay').classList.add('active');
-  const thumb = document.getElementById('ctxThumb');
   thumb.onclick = item.img ? () => {
     document.getElementById('fullscreenImgSrc').src = item.img;
     document.getElementById('fullscreenImg').classList.add('active');
   } : null;
+  document.getElementById('itemContextOverlay').classList.add('active');
 }
 function closeItemContext() {
   document.getElementById('itemContextOverlay').classList.remove('active');
