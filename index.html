@@ -148,8 +148,7 @@ input:focus,select:focus{border-color:var(--accent)}
 .drag-ghost img{width:100%;height:100%;object-fit:cover}
 
 /* ── DRAG PLACEHOLDER ── */
-.drag-placeholder{width:64px;height:64px;border-radius:8px;border:2px dashed var(--accent);background:rgba(0,229,255,.08);flex-shrink:0}
-.tier-item{transition:transform .2s cubic-bezier(.2,.8,.32,1)}
+.drag-placeholder{width:64px;height:64px;border-radius:8px;border:2px dashed var(--accent);background:rgba(0,229,255,.08);flex-shrink:0;pointer-events:none}
 
 /* ── ZOOM ── */
 .tier-container-wrapper{flex:1;overflow:auto;-webkit-overflow-scrolling:touch;touch-action:pan-x pan-y}
@@ -540,7 +539,7 @@ function createItemEl(item) {
   el.addEventListener('dragend', () => {
     el.classList.remove('dragging');
     dragItem = null;
-    clearPlaceholders();
+    clearHighlights();
   });
   el.addEventListener('touchstart', handleTouchStart, { passive: false });
   el.addEventListener('touchmove', handleTouchMove, { passive: false });
@@ -624,6 +623,9 @@ function openEditItem(id) {
 
 // ── DRAG & DROP ──
 let currentPlaceholder = null;
+let touchDragging = false;
+let touchMoved = false;
+let activeDragEl = null;
 
 function createPlaceholder() {
   const ph = document.createElement('div');
@@ -635,6 +637,24 @@ function removePlaceholder() {
   if (currentPlaceholder) { currentPlaceholder.remove(); currentPlaceholder = null; }
 }
 
+function getInsertIndexFromXY(zone, x, y) {
+  const items = [...zone.querySelectorAll('.tier-item:not(.dragging)')];
+  if (!items.length) return 0;
+  let bestIdx = items.length;
+  let bestDist = Infinity;
+  for (let i = 0; i < items.length; i++) {
+    const r = items[i].getBoundingClientRect();
+    const cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+    const dist = Math.abs(y - cy) * 2 + Math.abs(x - cx);
+    if (dist < bestDist) { bestDist = dist; bestIdx = i; }
+  }
+  if (bestIdx < items.length) {
+    const r = items[bestIdx].getBoundingClientRect();
+    if (x > r.left + r.width / 2) bestIdx++;
+  }
+  return bestIdx;
+}
+
 function showPlaceholder(zone, x, y) {
   if (!zone) { removePlaceholder(); return; }
   if (!currentPlaceholder) currentPlaceholder = createPlaceholder();
@@ -642,6 +662,16 @@ function showPlaceholder(zone, x, y) {
   const items = [...zone.querySelectorAll('.tier-item:not(.dragging)')];
   if (idx < items.length) zone.insertBefore(currentPlaceholder, items[idx]);
   else zone.appendChild(currentPlaceholder);
+}
+
+function getPlaceholderIndex(zone) {
+  if (!currentPlaceholder) return undefined;
+  let idx = 0;
+  for (const child of zone.children) {
+    if (child === currentPlaceholder) return idx;
+    if (child.classList.contains('tier-item') && !child.classList.contains('dragging')) idx++;
+  }
+  return idx;
 }
 
 function setupDropZone(zone) {
@@ -667,31 +697,6 @@ function setupDropZone(zone) {
   });
 }
 
-function getPlaceholderIndex(zone) {
-  if (!currentPlaceholder) return undefined;
-  const items = [...zone.querySelectorAll('.tier-item:not(.dragging)')];
-  let idx = 0;
-  for (const child of zone.children) {
-    if (child === currentPlaceholder) return idx;
-    if (child.classList.contains('tier-item') && !child.classList.contains('dragging')) idx++;
-  }
-  return items.length;
-}
-
-function getInsertIndexFromXY(zone, x, y) {
-  const items = [...zone.querySelectorAll('.tier-item:not(.dragging)')];
-  if (!items.length) return 0;
-  let closest = 0, minDist = Infinity;
-  for (let i = 0; i < items.length; i++) {
-    const r = items[i].getBoundingClientRect();
-    const cx = r.left + r.width / 2, cy = r.top + r.height / 2;
-    const dist = Math.sqrt((x - cx) ** 2 + (y - cy) ** 2);
-    if (dist < minDist) { minDist = dist; closest = i; }
-  }
-  const r = items[closest].getBoundingClientRect();
-  return x > r.left + r.width / 2 ? closest + 1 : closest;
-}
-
 function moveItem(itemId, toTier, insertIdx) {
   const list = getList();
   if (!list) return;
@@ -699,7 +704,7 @@ function moveItem(itemId, toTier, insertIdx) {
     list.tiers[t] = list.tiers[t].filter(id => id !== itemId);
   });
   if (!list.tiers[toTier]) list.tiers[toTier] = [];
-  if (insertIdx !== undefined && insertIdx < list.tiers[toTier].length) {
+  if (insertIdx !== undefined && insertIdx <= list.tiers[toTier].length) {
     list.tiers[toTier].splice(insertIdx, 0, itemId);
   } else {
     list.tiers[toTier].push(itemId);
@@ -708,77 +713,110 @@ function moveItem(itemId, toTier, insertIdx) {
   renderTiers();
 }
 
-function clearPlaceholders() {
+function clearHighlights() {
   document.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
 }
 
-// ── TOUCH DRAG ──
-let touchDragging = false;
-let touchMoved = false;
+function getDropZone(x, y) {
+  const zones = document.querySelectorAll('.tier-items, .unranked-items');
+  let best = null, bestDist = Infinity;
+  for (const z of zones) {
+    const r = z.getBoundingClientRect();
+    if (x >= r.left && x <= r.right && y >= r.top - 20 && y <= r.bottom + 20) {
+      const cy = (r.top + r.bottom) / 2;
+      const dist = Math.abs(y - cy);
+      if (dist < bestDist) { bestDist = dist; best = z; }
+    }
+  }
+  return best;
+}
 
+// ── TOUCH DRAG ──
 function handleTouchStart(e) {
-  if (isZoomed) return;
+  if (isZoomed || e.touches.length > 1) return;
   const el = e.currentTarget;
   const touch = e.touches[0];
   touchStartX = touch.clientX;
   touchStartY = touch.clientY;
   touchDragging = false;
   touchMoved = false;
+  activeDragEl = el;
   dragItem = el.dataset.id;
   el._touchTimeout = setTimeout(() => {
-    touchDragging = true;
-    el.classList.add('dragging');
-    createGhostEl(el, touch.clientX, touch.clientY);
-  }, 300);
+    if (!touchMoved) {
+      touchDragging = true;
+      el.classList.add('dragging');
+      createGhostEl(el, touch.clientX, touch.clientY);
+      if (navigator.vibrate) navigator.vibrate(30);
+    }
+  }, 250);
 }
 
 function handleTouchMove(e) {
-  const el = e.currentTarget;
+  if (isZoomed || e.touches.length > 1) { cancelDrag(); return; }
   const touch = e.touches[0];
   const dx = Math.abs(touch.clientX - touchStartX);
   const dy = Math.abs(touch.clientY - touchStartY);
-  if (dx < 8 && dy < 8) return;
-  touchMoved = true;
-  e.preventDefault();
   if (!touchDragging) {
-    clearTimeout(el._touchTimeout);
-    touchDragging = true;
-    el.classList.add('dragging');
-    createGhostEl(el, touch.clientX, touch.clientY);
+    if (dx > 10 || dy > 10) {
+      touchMoved = true;
+      clearTimeout(activeDragEl?._touchTimeout);
+    }
+    return;
   }
+  e.preventDefault();
   if (dragGhost) {
     dragGhost.style.left = touch.clientX + 'px';
     dragGhost.style.top = touch.clientY + 'px';
   }
+  clearHighlights();
   const zone = getDropZone(touch.clientX, touch.clientY);
-  highlightDropZone(touch.clientX, touch.clientY);
-  showPlaceholder(zone, touch.clientX, touch.clientY);
+  if (zone) {
+    zone.classList.add('drag-over');
+    showPlaceholder(zone, touch.clientX, touch.clientY);
+  } else {
+    removePlaceholder();
+  }
 }
 
 function handleTouchEnd(e) {
-  const el = e.currentTarget;
+  if (!activeDragEl) return;
+  const el = activeDragEl;
   clearTimeout(el._touchTimeout);
-  if (!touchMoved && !touchDragging) {
+  if (!touchDragging && !touchMoved) {
+    cleanupDrag();
     openItemContext(el.dataset.id);
-    dragItem = null;
-    removePlaceholder();
     return;
   }
-  el.classList.remove('dragging');
-  removeGhost();
   if (touchDragging && dragItem) {
     const touch = e.changedTouches[0];
     const zone = getDropZone(touch.clientX, touch.clientY);
     if (zone) {
       const insertIdx = getInsertIndexFromXY(zone, touch.clientX, touch.clientY);
+      cleanupDrag();
       moveItem(dragItem, zone.dataset.tier, insertIdx);
+      return;
     }
   }
+  cleanupDrag();
+}
+
+function cancelDrag() {
+  if (activeDragEl) {
+    clearTimeout(activeDragEl._touchTimeout);
+    cleanupDrag();
+  }
+}
+
+function cleanupDrag() {
+  if (activeDragEl) activeDragEl.classList.remove('dragging');
+  removeGhost();
+  removePlaceholder();
+  clearHighlights();
   dragItem = null;
   touchDragging = false;
   touchMoved = false;
-  removePlaceholder();
-  clearPlaceholders();
+  activeDragEl = null;
 }
 
 function createGhostEl(el, x, y) {
@@ -795,21 +833,6 @@ function createGhostEl(el, x, y) {
 
 function removeGhost() {
   if (dragGhost) { dragGhost.remove(); dragGhost = null; }
-}
-
-function getDropZone(x, y) {
-  const zones = document.querySelectorAll('.tier-items, .unranked-items');
-  for (const z of zones) {
-    const r = z.getBoundingClientRect();
-    if (x >= r.left && x <= r.right && y >= r.top && y <= r.bottom) return z;
-  }
-  return null;
-}
-
-function highlightDropZone(x, y) {
-  clearPlaceholders();
-  const zone = getDropZone(x, y);
-  if (zone) zone.classList.add('drag-over');
 }
 
 // ── ADD ITEM MODAL ──
