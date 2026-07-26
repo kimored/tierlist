@@ -46,10 +46,16 @@ input:focus,select:focus{border-color:var(--accent)}
 .list-card:hover::before{opacity:1}
 .list-card-name{font-size:16px;font-weight:700;margin-bottom:4px;padding-right:60px}
 .list-card-count{font-size:13px;color:var(--text2);margin-bottom:10px}
-.list-card-preview{display:flex;gap:4px;flex-wrap:wrap}
-.list-card-preview .preview-thumb{width:32px;height:32px;border-radius:6px;overflow:hidden;background:var(--surface2)}
-.list-card-preview .preview-thumb img{width:100%;height:100%;object-fit:cover}
-.list-card-preview .preview-more{width:32px;height:32px;border-radius:6px;background:var(--surface3);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--text2)}
+.list-card-preview{display:flex;flex-direction:column;gap:3px}
+.mini-tier-row{display:flex;align-items:stretch;border-radius:4px;overflow:hidden;height:24px}
+.mini-tier-label{width:20px;min-width:20px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:900;color:#000}
+.mini-tier-label[data-tier="S"]{background:var(--s)}
+.mini-tier-label[data-tier="A"]{background:var(--a)}
+.mini-tier-label[data-tier="B"]{background:var(--b)}
+.mini-tier-items{display:flex;gap:2px;padding:2px;background:var(--surface2);flex:1;align-items:center;overflow:hidden}
+.mini-tier-items .mini-thumb{width:20px;height:20px;border-radius:3px;overflow:hidden;flex-shrink:0}
+.mini-tier-items .mini-thumb img{width:100%;height:100%;object-fit:cover}
+.mini-tier-items .mini-more{width:20px;height:20px;border-radius:3px;background:var(--surface3);display:flex;align-items:center;justify-content:center;font-size:7px;font-weight:700;color:var(--text2);flex-shrink:0}
 .list-card-actions{position:absolute;top:12px;right:12px;display:flex;gap:4px}
 .list-card-actions button{width:32px;height:32px;border-radius:8px;font-size:15px;display:flex;align-items:center;justify-content:center;background:var(--surface2);border:1px solid var(--surface3);transition:all .2s;opacity:.6}
 .list-card-actions button:hover{opacity:1;border-color:var(--accent)}
@@ -146,12 +152,15 @@ input:focus,select:focus{border-color:var(--accent)}
 .tier-item{transition:transform .15s ease}
 
 /* ── ZOOM CONTROLS ── */
-.zoom-bar{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);display:none;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--surface3);border-radius:12px;padding:6px 12px;z-index:50;box-shadow:0 4px 20px rgba(0,0,0,.5)}
+.zoom-bar{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);display:none;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--surface3);border-radius:14px;padding:8px 16px;z-index:50;box-shadow:0 4px 20px rgba(0,0,0,.5)}
 .zoom-bar.visible{display:flex}
-.zoom-btn{width:36px;height:36px;border-radius:8px;background:var(--surface2);border:1px solid var(--surface3);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:var(--text);cursor:pointer;transition:all .15s}
-.zoom-btn:hover{border-color:var(--accent);color:var(--accent)}
-.zoom-level{font-size:13px;color:var(--text2);min-width:40px;text-align:center;font-weight:600}
-.tier-container{transform-origin:top left;transition:transform .2s ease}
+.zoom-label{font-size:16px;flex-shrink:0}
+.zoom-slider-track{width:140px;height:6px;background:var(--surface3);border-radius:3px;position:relative;cursor:pointer;touch-action:none}
+.zoom-slider-fill{position:absolute;left:0;top:0;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:3px;pointer-events:none}
+.zoom-slider-thumb{position:absolute;top:50%;width:22px;height:22px;background:var(--accent);border-radius:50%;transform:translate(-50%,-50%);cursor:grab;box-shadow:0 2px 8px rgba(0,229,255,.4);touch-action:none}
+.zoom-slider-thumb:active{cursor:grabbing;transform:translate(-50%,-50%) scale(1.15)}
+.zoom-level{font-size:13px;color:var(--text2);min-width:36px;text-align:center;font-weight:600;flex-shrink:0}
+.tier-container{transform-origin:top center;transition:transform .15s ease}
 
 @media(max-width:500px){
   .list-grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
@@ -193,10 +202,12 @@ input:focus,select:focus{border-color:var(--accent)}
     </div>
   </div>
   <div class="zoom-bar" id="zoomBar">
-    <button class="zoom-btn" id="zoomOut">−</button>
+    <span class="zoom-label">🔍</span>
+    <div class="zoom-slider-track" id="zoomTrack">
+      <div class="zoom-slider-fill" id="zoomFill"></div>
+      <div class="zoom-slider-thumb" id="zoomThumb"></div>
+    </div>
     <span class="zoom-level" id="zoomLevel">100%</span>
-    <button class="zoom-btn" id="zoomIn">+</button>
-    <button class="zoom-btn" id="zoomReset" style="font-size:12px">↺</button>
   </div>
 </div>
 
@@ -304,23 +315,19 @@ function esc(s) { const d = document.createElement('div'); d.textContent = s; re
 
 function buildCardPreview(list) {
   if (!list.tiers || !list.items || !list.items.length) return '';
-  const topItems = [];
+  let html = '';
+  const MAX_PER_TIER = 5;
   for (const tier of ['S','A','B']) {
-    for (const id of (list.tiers[tier] || [])) {
-      const item = list.items.find(i => i.id === id);
-      if (item) topItems.push(item);
-    }
-  }
-  if (!topItems.length) return '';
-  const MAX = 5;
-  const shown = topItems.slice(0, MAX);
-  const remaining = topItems.length - MAX;
-  let html = shown.map(item =>
-    item.img ? `<div class="preview-thumb"><img src="${item.img}"></div>`
-             : `<div class="preview-thumb"></div>`
-  ).join('');
-  if (remaining > 0) {
-    html += `<div class="preview-more">+${remaining}</div>`;
+    const ids = list.tiers[tier] || [];
+    if (!ids.length) continue;
+    const items = ids.map(id => list.items.find(i => i.id === id)).filter(Boolean);
+    const shown = items.slice(0, MAX_PER_TIER);
+    const remaining = items.length - MAX_PER_TIER;
+    let thumbs = shown.map(item =>
+      item.img ? `<div class="mini-thumb"><img src="${item.img}"></div>` : `<div class="mini-thumb"></div>`
+    ).join('');
+    if (remaining > 0) thumbs += `<div class="mini-more">+${remaining}</div>`;
+    html += `<div class="mini-tier-row"><div class="mini-tier-label" data-tier="${tier}">${tier}</div><div class="mini-tier-items">${thumbs}</div></div>`;
   }
   return html;
 }
@@ -415,18 +422,42 @@ document.getElementById('renameInput').addEventListener('keydown', e => {
   if (e.key === 'Enter') document.getElementById('renameConfirmBtn').click();
 });
 
-// ── ZOOM ──
+// ── ZOOM SLIDER ──
 let zoomScale = 1;
+const ZOOM_MIN = 0.5, ZOOM_MAX = 3;
 function updateZoom() {
   const container = document.getElementById('tierContainer');
   container.style.transform = `scale(${zoomScale})`;
-  container.style.transformOrigin = 'top center';
   container.style.width = (100 / zoomScale) + '%';
   document.getElementById('zoomLevel').textContent = Math.round(zoomScale * 100) + '%';
+  const pct = (zoomScale - ZOOM_MIN) / (ZOOM_MAX - ZOOM_MIN) * 100;
+  document.getElementById('zoomFill').style.width = pct + '%';
+  document.getElementById('zoomThumb').style.left = pct + '%';
 }
-document.getElementById('zoomIn').addEventListener('click', () => { zoomScale = Math.min(3, zoomScale + 0.25); updateZoom(); });
-document.getElementById('zoomOut').addEventListener('click', () => { zoomScale = Math.max(0.5, zoomScale - 0.25); updateZoom(); });
-document.getElementById('zoomReset').addEventListener('click', () => { zoomScale = 1; updateZoom(); });
+function zoomFromX(clientX) {
+  const track = document.getElementById('zoomTrack');
+  const rect = track.getBoundingClientRect();
+  const pct = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+  zoomScale = ZOOM_MIN + pct * (ZOOM_MAX - ZOOM_MIN);
+  zoomScale = Math.round(zoomScale * 20) / 20;
+  updateZoom();
+}
+document.getElementById('zoomTrack').addEventListener('pointerdown', (e) => {
+  e.preventDefault();
+  zoomFromX(e.clientX);
+  const onMove = (ev) => { ev.preventDefault(); zoomFromX(ev.clientX); };
+  const onUp = () => { document.removeEventListener('pointermove', onMove); document.removeEventListener('pointerup', onUp); };
+  document.addEventListener('pointermove', onMove);
+  document.addEventListener('pointerup', onUp);
+});
+document.getElementById('zoomThumb').addEventListener('pointerdown', (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  const onMove = (ev) => { ev.preventDefault(); zoomFromX(ev.clientX); };
+  const onUp = () => { document.removeEventListener('pointermove', onMove); document.removeEventListener('pointerup', onUp); };
+  document.addEventListener('pointermove', onMove);
+  document.addEventListener('pointerup', onUp);
+});
 
 // ── TIER VIEW ──
 function openList(id) {
@@ -876,14 +907,16 @@ function compressImage(file, cb) {
   const img = new Image();
   img.onload = () => {
     const canvas = document.createElement('canvas');
-    const MAX = 200;
+    const MAX = 800;
     let w = img.width, h = img.height;
-    if (w > h) { h = h * MAX / w; w = MAX; }
-    else { w = w * MAX / h; h = MAX; }
+    if (w > MAX || h > MAX) {
+      if (w > h) { h = h * MAX / w; w = MAX; }
+      else { w = w * MAX / h; h = MAX; }
+    }
     canvas.width = w;
     canvas.height = h;
     canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-    cb(canvas.toDataURL('image/jpeg', 0.7));
+    cb(canvas.toDataURL('image/jpeg', 0.92));
   };
   img.src = URL.createObjectURL(file);
 }
